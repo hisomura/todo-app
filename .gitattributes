@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+# binaries for view
+*.png binary
+*.gif binary
+*.jpg binary
+*.ico binary
+*.psd binary
+*.woff2 binary
+
+# other type binaries
+*.pdf binary
+*.exe binary
+*.phar binary
+*.zip binary
+*.tar binary
