@@ -1,26 +1,31 @@
-import { KeyboardEventHandler, useState } from 'react'
+import { ChangeEventHandler, KeyboardEventHandler, useState } from 'react'
 
 export default function Home() {
-  const [todoList, setTodo] = useState(['List items', 'Add item', 'Remove todo']);
+  const [todoList, setTodo] = useState(['List items', 'Add item', 'Remove todo'])
+  const [formText, setFormText] = useState('')
+
+  const changeText: ChangeEventHandler<HTMLInputElement> = (event) => {
+    // https://developer.mozilla.org/ja/docs/Web/API/Event/currentTarget
+    setFormText(event.currentTarget.value)
+  }
 
   const addItem: KeyboardEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
     // if (event.keyCode === 229) return
-    if (event.key === 'Process') return
-    if (event.key === 'Enter') {
-      setTodo([...todoList, 'New todo'])
-    }
-    console.log(event.key)
+    if (event.key !== 'Enter') return
+    event.currentTarget.value = ''
+    setTodo([...todoList, formText])
+    setFormText('')
   }
 
   return (
     <div>
       <ul>
-        {todoList.map((item) => (
-          <li>{item}</li>
+        {todoList.map((item, index) => (
+          <li key={index}>{item}</li>
         ))}
       </ul>
-      <input onKeyDown={addItem} type="text" />
+      <input onKeyDown={addItem} onChange={changeText} type="text" />
     </div>
   )
 }
