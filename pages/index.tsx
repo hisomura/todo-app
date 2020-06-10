@@ -1,7 +1,7 @@
-import { ChangeEventHandler, KeyboardEventHandler, useState } from 'react'
+import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 
 export default function Home() {
-  const [todoList, setTodo] = useState(['List items', 'Add item', 'Remove todo'])
+  const [todoList, setTodoList] = useState(['List items', 'Add item', 'Remove todo'])
   const [formText, setFormText] = useState('')
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
@@ -14,15 +14,29 @@ export default function Home() {
     // if (event.keyCode === 229) return
     if (event.key !== 'Enter') return
     event.currentTarget.value = ''
-    setTodo([...todoList, formText])
+    setTodoList([...todoList, formText])
     setFormText('')
+  }
+
+  const onClick = (event: MouseEvent<HTMLButtonElement>, todoIndex: number) => {
+    const newTodoList = todoList.filter((item, index) => index !== todoIndex)
+    setTodoList(newTodoList)
   }
 
   return (
     <div>
       <ul>
         {todoList.map((item, index) => (
-          <li key={index}>{item}</li>
+          <li key={index}>
+            {item}
+            <button
+              onClick={(e) => {
+                onClick(e, index)
+              }}
+            >
+              remove
+            </button>
+          </li>
         ))}
       </ul>
       <input onKeyDown={onKeyDown} onChange={onChange} type="text" />
