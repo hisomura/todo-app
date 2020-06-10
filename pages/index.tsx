@@ -4,12 +4,12 @@ export default function Home() {
   const [todoList, setTodo] = useState(['List items', 'Add item', 'Remove todo'])
   const [formText, setFormText] = useState('')
 
-  const changeText: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/ja/docs/Web/API/Event/currentTarget
     setFormText(event.currentTarget.value)
   }
 
-  const addItem: KeyboardEventHandler<HTMLInputElement> = (event) => {
+  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
     // if (event.keyCode === 229) return
     if (event.key !== 'Enter') return
@@ -25,7 +25,7 @@ export default function Home() {
           <li key={index}>{item}</li>
         ))}
       </ul>
-      <input onKeyDown={addItem} onChange={changeText} type="text" />
+      <input onKeyDown={onKeyDown} onChange={onChange} type="text" />
     </div>
   )
 }
