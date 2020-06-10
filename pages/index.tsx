@@ -1,3 +1,13 @@
 export default function Home() {
-  return <div>Hello, world</div>
+  const todoList = ['List items', 'Add item', 'Remove todo']
+
+  return (
+    <div>
+      <ul>
+        {todoList.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </div>
+  )
 }
