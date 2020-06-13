@@ -1,4 +1,10 @@
+/*noinspection CssInvalidAtRule*/
+@tailwind base;
+/*noinspection CssInvalidAtRule*/
+@tailwind components;
+/*noinspection CssInvalidAtRule*/
+@tailwind utilities;
+
 html,
 body {
-    background-color: antiquewhite;
 }

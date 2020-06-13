@@ -25,6 +25,7 @@ export default function Home() {
 
   return (
     <div>
+      <h1 className="text-xl bg-gray-200">Todo List</h1>
       <ul>
         {todoList.map((item, index) => (
           <li key={index}>
