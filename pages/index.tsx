@@ -1,6 +1,7 @@
 import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 import cn from 'classnames'
 import ToggleExpandIcon from '../components/ToggleExpandIcon'
+import { MdClose } from 'react-icons/md'
 
 type Task = {
   id: number
@@ -31,7 +32,7 @@ export default function Home() {
     Task.create('Reopen a task', true),
     Task.create('Filter tasks by closed', true),
     Task.create('Folding closed tasks', true),
-    Task.create('Clear a closed task'),
+    Task.create('Clear a closed task', true),
     Task.create('Clear all closed task'),
     Task.create('Drag and Drop a task'),
   ])
@@ -58,6 +59,10 @@ export default function Home() {
       return { ...task, closed: event.currentTarget.checked }
     })
     setTasks(newTasks)
+  }
+
+  const clearTask = (event: MouseEvent<HTMLElement>, taskIndex: number) => {
+    setTasks(tasks.filter((item, index) => index !== taskIndex))
   }
 
   return (
@@ -106,6 +111,9 @@ export default function Home() {
                   defaultChecked={task.closed}
                 />
                 <p className={cn({ 'line-through': task.closed })}>{task.name}</p>
+                <div className="my-auto ml-auto" onClick={(e) => clearTask(e, index)}>
+                  <MdClose />
+                </div>
               </li>
             ))}
         </ul>
