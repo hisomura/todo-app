@@ -1,28 +1,9 @@
 import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 import cn from 'classnames'
 import ToggleExpandIcon from '../components/ToggleExpandIcon'
-import { MdClose, MdClearAll } from 'react-icons/md'
-
-type Task = {
-  id: number
-  name: string
-  closed: boolean
-}
-
-const Task = {
-  lastId: 0,
-  id: () => {
-    Task.lastId += 1
-    return Task.lastId
-  },
-  create: (name: string, closed = false): Task => {
-    return {
-      id: Task.id(),
-      name,
-      closed,
-    }
-  },
-}
+import { MdClearAll } from 'react-icons/md'
+import TaskItem from '../components/TaskItem'
+import { Task } from '../lib/task'
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([
@@ -53,16 +34,16 @@ export default function Home() {
     setFormText('')
   }
 
-  const toggleTask = (event: MouseEvent<HTMLInputElement>, taskId: number) => {
+  const toggleTask = (event: MouseEvent<HTMLInputElement>, target: Task) => {
     const newTasks = tasks.map((task) => {
-      if (task.id !== taskId) return task
+      if (task.id !== target.id) return task
       return { ...task, closed: event.currentTarget.checked }
     })
     setTasks(newTasks)
   }
 
-  const clearTask = (event: MouseEvent<HTMLElement>, taskIndex: number) => {
-    setTasks(tasks.filter((item, index) => index !== taskIndex))
+  const clearTask = (event: MouseEvent<HTMLElement>, target: Task) => {
+    setTasks(tasks.filter((task) => task.id !== target.id))
   }
 
   return (
@@ -78,15 +59,7 @@ export default function Home() {
           {tasks
             .filter((task) => !task.closed)
             .map((task, index) => (
-              <li key={task.id} className="flex py-2">
-                <input
-                  className="my-auto mr-2"
-                  type="checkbox"
-                  onClick={(e) => toggleTask(e, task.id)}
-                  defaultChecked={task.closed}
-                />
-                <p className={cn({ 'line-through': task.closed })}>{task.name}</p>
-              </li>
+              <TaskItem key={task.id} task={task} index={index} toggleTask={toggleTask} />
             ))}
         </ul>
 
@@ -97,27 +70,11 @@ export default function Home() {
           </div>
           <ToggleExpandIcon expanded={foldingClosedTasks} onClick={() => setFoldingClosedTasks(!foldingClosedTasks)} />
         </div>
-        <ul
-          className={cn({
-            'divide-y': true,
-            hidden: foldingClosedTasks,
-          })}
-        >
+        <ul className={cn({ 'divide-y': true, hidden: foldingClosedTasks })}>
           {tasks
             .filter((task) => task.closed)
             .map((task, index) => (
-              <li key={task.id} className="flex py-2">
-                <input
-                  className="my-auto mr-2"
-                  type="checkbox"
-                  onClick={(e) => toggleTask(e, task.id)}
-                  defaultChecked={task.closed}
-                />
-                <p className={cn({ 'line-through': task.closed })}>{task.name}</p>
-                <div className="my-auto ml-auto" onClick={(e) => clearTask(e, index)}>
-                  <MdClose />
-                </div>
-              </li>
+              <TaskItem key={task.id} task={task} index={index} toggleTask={toggleTask} clearTask={clearTask} />
             ))}
         </ul>
       </div>
