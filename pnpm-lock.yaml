@@ -5,6 +5,7 @@ dependencies:
   postcss-preset-env: 6.7.0
   react: 16.13.1
   react-dom: 16.13.1_react@16.13.1
+  react-icons: 3.10.0_react@16.13.1
   tailwindcss: 1.4.6
 devDependencies:
   '@types/node': 14.0.13
@@ -5243,6 +5244,15 @@ packages:
       react: ^16.13.1
     resolution:
       integrity: sha512-81PIMmVLnCNLO/fFOQxdQkvEq/+Hfpv24XNJfpyZhTRfO0QcmQIF/PgCa1zCOj2w1hrn12MFLyaJ/G0+Mxtfag==
+  /react-icons/3.10.0_react@16.13.1:
+    dependencies:
+      camelcase: 5.3.1
+      react: 16.13.1
+    dev: false
+    peerDependencies:
+      react: '*'
+    resolution:
+      integrity: sha512-WsQ5n1JToG9VixWilSo1bHv842Cj5aZqTGiS3Ud47myF6aK7S/IUY2+dHcBdmkQcCFRuHsJ9OMUI0kTDfjyZXQ==
   /react-is/16.13.1:
     dev: false
     resolution:
@@ -6416,5 +6426,6 @@ specifiers:
   prettier: ^2.0.5
   react: ^16.13.1
   react-dom: ^16.13.1
+  react-icons: ^3.10.0
   tailwindcss: ^1.4.6
   typescript: ^3.9.5
