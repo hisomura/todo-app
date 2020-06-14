@@ -18,29 +18,29 @@ export default function Home() {
     setFormText('')
   }
 
-  const onClick = (event: MouseEvent<HTMLButtonElement>, todoIndex: number) => {
+  const onClick = (event: MouseEvent<HTMLInputElement>, todoIndex: number) => {
     const newTodoList = todoList.filter((item, index) => index !== todoIndex)
     setTodoList(newTodoList)
   }
 
   return (
-    <div>
-      <h1 className="text-xl bg-gray-200">Todo List</h1>
-      <ul>
-        {todoList.map((item, index) => (
-          <li key={index}>
-            {item}
-            <button
-              onClick={(e) => {
-                onClick(e, index)
-              }}
-            >
-              remove
-            </button>
+    <div className="max-w-xl mx-auto py-8">
+      <div className="shadow-xl rounded px-4 pb-4">
+        <div className="py-4">
+          <h1>Todo</h1>
+        </div>
+        <ul className="divide-y">
+          <li className="py-2">
+            + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
           </li>
-        ))}
-      </ul>
-      <input onKeyDown={onKeyDown} onChange={onChange} type="text" />
+          {todoList.map((item, index) => (
+            <li key={index} className="flex py-2">
+              <input className="my-auto mr-2" type="checkbox" onClick={(e) => onClick(e, index)} />
+              <p>{item}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }
