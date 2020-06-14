@@ -24,11 +24,16 @@ const Task = {
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([
-    Task.create('Show Tasks', true),
+    Task.create('Show tasks', true),
     Task.create('Add a task', true),
     Task.create('Close a task', true),
     Task.create('Reopen a task', true),
-    Task.create('Remove a task'),
+    Task.create('Filter tasks by closed', true),
+    Task.create('Add a tag'),
+    Task.create('Remove a tag'),
+    Task.create('Filter tasks by tag'),
+    Task.create('Clear a task'),
+    Task.create('Clear all closed task'),
     Task.create('Drag and Drop a task'),
   ])
   const [formText, setFormText] = useState('')
@@ -65,7 +70,30 @@ export default function Home() {
           <li className="py-2">
             + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
           </li>
-          {tasks.map((task, index) => (
+          {tasks.filter(task => !task.closed).map((task, index) => (
+            <li key={task.id} className="flex py-2">
+              <input
+                className="my-auto mr-2"
+                type="checkbox"
+                onClick={(e) => toggleTask(e, task.id)}
+                defaultChecked={task.closed}
+              />
+              <p
+                className={cn({
+                  'line-through': task.closed,
+                })}
+              >
+                {task.name}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-2 py-1">
+          <h2>closed</h2>
+        </div>
+        <ul className="divide-y">
+          {tasks.filter(task => task.closed).map((task, index) => (
             <li key={task.id} className="flex py-2">
               <input
                 className="my-auto mr-2"
