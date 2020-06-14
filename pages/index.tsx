@@ -70,46 +70,50 @@ export default function Home() {
           <li className="py-2">
             + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
           </li>
-          {tasks.filter(task => !task.closed).map((task, index) => (
-            <li key={task.id} className="flex py-2">
-              <input
-                className="my-auto mr-2"
-                type="checkbox"
-                onClick={(e) => toggleTask(e, task.id)}
-                defaultChecked={task.closed}
-              />
-              <p
-                className={cn({
-                  'line-through': task.closed,
-                })}
-              >
-                {task.name}
-              </p>
-            </li>
-          ))}
+          {tasks
+            .filter((task) => !task.closed)
+            .map((task, index) => (
+              <li key={task.id} className="flex py-2">
+                <input
+                  className="my-auto mr-2"
+                  type="checkbox"
+                  onClick={(e) => toggleTask(e, task.id)}
+                  defaultChecked={task.closed}
+                />
+                <p
+                  className={cn({
+                    'line-through': task.closed,
+                  })}
+                >
+                  {task.name}
+                </p>
+              </li>
+            ))}
         </ul>
 
         <div className="mt-2 py-1">
           <h2>closed</h2>
         </div>
         <ul className="divide-y">
-          {tasks.filter(task => task.closed).map((task, index) => (
-            <li key={task.id} className="flex py-2">
-              <input
-                className="my-auto mr-2"
-                type="checkbox"
-                onClick={(e) => toggleTask(e, task.id)}
-                defaultChecked={task.closed}
-              />
-              <p
-                className={cn({
-                  'line-through': task.closed,
-                })}
-              >
-                {task.name}
-              </p>
-            </li>
-          ))}
+          {tasks
+            .filter((task) => task.closed)
+            .map((task, index) => (
+              <li key={task.id} className="flex py-2">
+                <input
+                  className="my-auto mr-2"
+                  type="checkbox"
+                  onClick={(e) => toggleTask(e, task.id)}
+                  defaultChecked={task.closed}
+                />
+                <p
+                  className={cn({
+                    'line-through': task.closed,
+                  })}
+                >
+                  {task.name}
+                </p>
+              </li>
+            ))}
         </ul>
       </div>
     </div>
