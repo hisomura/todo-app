@@ -31,10 +31,7 @@ export default function Home() {
     Task.create('Reopen a task', true),
     Task.create('Filter tasks by closed', true),
     Task.create('Folding closed tasks', true),
-    Task.create('Add a tag'),
-    Task.create('Remove a tag'),
-    Task.create('Filter tasks by tag'),
-    Task.create('Clear a task'),
+    Task.create('Clear a closed task'),
     Task.create('Clear all closed task'),
     Task.create('Drag and Drop a task'),
   ])
@@ -83,13 +80,7 @@ export default function Home() {
                   onClick={(e) => toggleTask(e, task.id)}
                   defaultChecked={task.closed}
                 />
-                <p
-                  className={cn({
-                    'line-through': task.closed,
-                  })}
-                >
-                  {task.name}
-                </p>
+                <p className={cn({ 'line-through': task.closed })}>{task.name}</p>
               </li>
             ))}
         </ul>
@@ -114,13 +105,7 @@ export default function Home() {
                   onClick={(e) => toggleTask(e, task.id)}
                   defaultChecked={task.closed}
                 />
-                <p
-                  className={cn({
-                    'line-through': task.closed,
-                  })}
-                >
-                  {task.name}
-                </p>
+                <p className={cn({ 'line-through': task.closed })}>{task.name}</p>
               </li>
             ))}
         </ul>
