@@ -1,7 +1,7 @@
 import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 import cn from 'classnames'
 import ToggleExpandIcon from '../components/ToggleExpandIcon'
-import { MdClose } from 'react-icons/md'
+import { MdClose, MdClearAll } from 'react-icons/md'
 
 type Task = {
   id: number
@@ -92,6 +92,9 @@ export default function Home() {
 
         <div className="mt-2 py-1 flex justify-between">
           <h2>closed</h2>
+          <div className="ml-auto mr-2" onClick={() => setTasks(tasks.filter((item) => !item.closed))}>
+            <MdClearAll />
+          </div>
           <ToggleExpandIcon expanded={foldingClosedTasks} onClick={() => setFoldingClosedTasks(!foldingClosedTasks)} />
         </div>
         <ul
