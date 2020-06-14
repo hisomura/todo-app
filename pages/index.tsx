@@ -1,13 +1,35 @@
 import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
+import cn from 'classnames'
+
+type Task = {
+  id: number
+  name: string
+  closed: boolean
+}
+
+const Task = {
+  lastId: 0,
+  id: () => {
+    Task.lastId += 1
+    return Task.lastId
+  },
+  create: (name: string, closed = false): Task => {
+    return {
+      id: Task.id(),
+      name,
+      closed,
+    }
+  },
+}
 
 export default function Home() {
-  const [tasks, setTasks] = useState([
-    'Show Tasks',
-    'Add a task',
-    'Close a task',
-    'Open a task',
-    'Remove a task',
-    'Drag and Drop a task',
+  const [tasks, setTasks] = useState<Task[]>([
+    Task.create('Show Tasks', true),
+    Task.create('Add a task', true),
+    Task.create('Close a task', true),
+    Task.create('ReOpen a task'),
+    Task.create('Remove a task'),
+    Task.create('Drag and Drop a task'),
   ])
   const [formText, setFormText] = useState('')
 
@@ -21,12 +43,19 @@ export default function Home() {
     // if (event.keyCode === 229) return
     if (event.key !== 'Enter') return
     event.currentTarget.value = ''
-    setTasks([...tasks, formText])
+    setTasks([...tasks, Task.create(formText)])
     setFormText('')
   }
 
-  const onClick = (event: MouseEvent<HTMLInputElement>, taskIndex: number) => {
-    const newTasks = tasks.filter((task, index) => index !== taskIndex)
+  const closeTask = (event: MouseEvent<HTMLInputElement>, taskId: number) => {
+    const newTasks = tasks.map((task) => {
+      if (task.id !== taskId) return task
+      return {
+        id: task.id,
+        name: task.name,
+        closed: true,
+      }
+    })
     setTasks(newTasks)
   }
 
@@ -41,9 +70,20 @@ export default function Home() {
             + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
           </li>
           {tasks.map((task, index) => (
-            <li key={index} className="flex py-2">
-              <input className="my-auto mr-2" type="checkbox" onClick={(e) => onClick(e, index)} />
-              <p>{task}</p>
+            <li key={task.id} className="flex py-2">
+              <input
+                className="my-auto mr-2"
+                type="checkbox"
+                onClick={(e) => closeTask(e, task.id)}
+                checked={task.closed}
+              />
+              <p
+                className={cn({
+                  'line-through': task.closed,
+                })}
+              >
+                {task.name}
+              </p>
             </li>
           ))}
         </ul>
