@@ -1,5 +1,6 @@
 import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 import cn from 'classnames'
+import { MdExpandMore } from 'react-icons/md'
 
 type Task = {
   id: number
@@ -29,6 +30,7 @@ export default function Home() {
     Task.create('Close a task', true),
     Task.create('Reopen a task', true),
     Task.create('Filter tasks by closed', true),
+    Task.create('Folding closed tasks', true),
     Task.create('Add a tag'),
     Task.create('Remove a tag'),
     Task.create('Filter tasks by tag'),
@@ -37,6 +39,7 @@ export default function Home() {
     Task.create('Drag and Drop a task'),
   ])
   const [formText, setFormText] = useState('')
+  const [foldingClosedTasks, setFoldingClosedTasks] = useState(true)
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/ja/docs/Web/API/Event/currentTarget
@@ -91,10 +94,16 @@ export default function Home() {
             ))}
         </ul>
 
-        <div className="mt-2 py-1">
+        <div className="mt-2 py-1 flex justify-between">
           <h2>closed</h2>
+          <MdExpandMore onClick={() => setFoldingClosedTasks(!foldingClosedTasks)} />
         </div>
-        <ul className="divide-y">
+        <ul
+          className={cn({
+            'divide-y': true,
+            hidden: foldingClosedTasks,
+          })}
+        >
           {tasks
             .filter((task) => task.closed)
             .map((task, index) => (
