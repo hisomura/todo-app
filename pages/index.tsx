@@ -1,7 +1,14 @@
 import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 
 export default function Home() {
-  const [todoList, setTodoList] = useState(['List items', 'Add item', 'Remove todo'])
+  const [tasks, setTasks] = useState([
+    'Show Tasks',
+    'Add a task',
+    'Close a task',
+    'Open a task',
+    'Remove a task',
+    'Drag and Drop a task',
+  ])
   const [formText, setFormText] = useState('')
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
@@ -14,13 +21,13 @@ export default function Home() {
     // if (event.keyCode === 229) return
     if (event.key !== 'Enter') return
     event.currentTarget.value = ''
-    setTodoList([...todoList, formText])
+    setTasks([...tasks, formText])
     setFormText('')
   }
 
-  const onClick = (event: MouseEvent<HTMLInputElement>, todoIndex: number) => {
-    const newTodoList = todoList.filter((item, index) => index !== todoIndex)
-    setTodoList(newTodoList)
+  const onClick = (event: MouseEvent<HTMLInputElement>, taskIndex: number) => {
+    const newTasks = tasks.filter((task, index) => index !== taskIndex)
+    setTasks(newTasks)
   }
 
   return (
@@ -33,10 +40,10 @@ export default function Home() {
           <li className="py-2">
             + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
           </li>
-          {todoList.map((item, index) => (
+          {tasks.map((task, index) => (
             <li key={index} className="flex py-2">
               <input className="my-auto mr-2" type="checkbox" onClick={(e) => onClick(e, index)} />
-              <p>{item}</p>
+              <p>{task}</p>
             </li>
           ))}
         </ul>
