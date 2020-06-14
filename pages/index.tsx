@@ -14,7 +14,7 @@ export default function Home() {
     Task.create('Filter tasks by closed', true),
     Task.create('Folding closed tasks', true),
     Task.create('Clear a closed task', true),
-    Task.create('Clear all closed task'),
+    Task.create('Clear all closed task', true),
     Task.create('Drag and Drop a task'),
   ])
   const [formText, setFormText] = useState('')
@@ -29,6 +29,7 @@ export default function Home() {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
     // if (event.keyCode === 229) return
     if (event.key !== 'Enter') return
+    if (formText === '') return
     event.currentTarget.value = ''
     setTasks([...tasks, Task.create(formText)])
     setFormText('')
