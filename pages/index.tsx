@@ -27,7 +27,7 @@ export default function Home() {
     Task.create('Show Tasks', true),
     Task.create('Add a task', true),
     Task.create('Close a task', true),
-    Task.create('ReOpen a task'),
+    Task.create('Reopen a task', true),
     Task.create('Remove a task'),
     Task.create('Drag and Drop a task'),
   ])
@@ -47,14 +47,10 @@ export default function Home() {
     setFormText('')
   }
 
-  const closeTask = (event: MouseEvent<HTMLInputElement>, taskId: number) => {
+  const toggleTask = (event: MouseEvent<HTMLInputElement>, taskId: number) => {
     const newTasks = tasks.map((task) => {
       if (task.id !== taskId) return task
-      return {
-        id: task.id,
-        name: task.name,
-        closed: true,
-      }
+      return { ...task, closed: event.currentTarget.checked }
     })
     setTasks(newTasks)
   }
@@ -74,8 +70,8 @@ export default function Home() {
               <input
                 className="my-auto mr-2"
                 type="checkbox"
-                onClick={(e) => closeTask(e, task.id)}
-                checked={task.closed}
+                onClick={(e) => toggleTask(e, task.id)}
+                defaultChecked={task.closed}
               />
               <p
                 className={cn({
