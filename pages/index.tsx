@@ -1,6 +1,6 @@
 import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 import cn from 'classnames'
-import { MdExpandMore } from 'react-icons/md'
+import ToggleExpandIcon from '../components/ToggleExpandIcon'
 
 type Task = {
   id: number
@@ -96,7 +96,7 @@ export default function Home() {
 
         <div className="mt-2 py-1 flex justify-between">
           <h2>closed</h2>
-          <MdExpandMore onClick={() => setFoldingClosedTasks(!foldingClosedTasks)} />
+          <ToggleExpandIcon expanded={foldingClosedTasks} onClick={() => setFoldingClosedTasks(!foldingClosedTasks)} />
         </div>
         <ul
           className={cn({
