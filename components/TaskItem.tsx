@@ -1,5 +1,5 @@
+import React, { MouseEvent } from 'react'
 import cn from 'classnames'
-import { MouseEvent, MouseEventHandler } from 'react'
 import { MdClose } from 'react-icons/md'
 import { Task } from '../lib/task'
 
