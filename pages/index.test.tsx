@@ -1,10 +1,10 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Home from './index'
 
-test('renders a message', () => {
+test('Add Task.', async () => {
   render(<Home />)
-  screen.getByText('Todo')
-  expect(screen.getByRole('textbox')).toBeInTheDocument()
-  // screen.debug()
+  await userEvent.type(screen.getByRole('textbox'), 'Add Test.{enter}')
+  expect(await screen.findByText(/Add Test/)).toBeInTheDocument()
 })
