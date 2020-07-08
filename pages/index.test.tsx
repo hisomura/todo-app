@@ -4,6 +4,7 @@ import Home from './index'
 
 test('renders a message', () => {
   render(<Home />)
-  screen.getByText('Todo');
+  screen.getByText('Todo')
+  expect(screen.getByRole('textbox')).toBeInTheDocument()
   // screen.debug()
 })
