@@ -13,7 +13,7 @@ type Props = {
 
 export default function TaskItem(props: Props) {
   return (
-    <li key={props.task.id} className="flex py-2">
+    <li key={props.task.id} className="flex py-2" data-testid={props.clearTask ? 'task-item-closed' : 'task-item-open'}>
       <input
         className="my-auto mr-2"
         type="checkbox"

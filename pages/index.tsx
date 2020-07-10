@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 import cn from 'classnames'
 import ToggleExpandIcon from '../components/ToggleExpandIcon'
@@ -7,17 +7,7 @@ import TaskItem from '../components/TaskItem'
 import { Task } from '../lib/task'
 
 export default function Home() {
-  const [tasks, setTasks] = useState<Task[]>([
-    Task.create('Show tasks', true),
-    Task.create('Add a task', true),
-    Task.create('Close a task', true),
-    Task.create('Reopen a task', true),
-    Task.create('Filter tasks by closed', true),
-    Task.create('Folding closed tasks', true),
-    Task.create('Clear a closed task', true),
-    Task.create('Clear all closed task', true),
-    Task.create('Drag and Drop a task'),
-  ])
+  const [tasks, setTasks] = useState<Task[]>([])
   const [formText, setFormText] = useState('')
   const [foldingClosedTasks, setFoldingClosedTasks] = useState(true)
 
