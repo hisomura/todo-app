@@ -34,7 +34,7 @@ export default function Home() {
     setTasks(newTasks)
   }
 
-  const clearTask = (event: MouseEvent<HTMLElement>, target: Task) => {
+  const clearTask = (_event: MouseEvent<HTMLElement>, target: Task) => {
     setTasks(tasks.filter((task) => task.id !== target.id))
   }
 

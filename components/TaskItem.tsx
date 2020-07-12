@@ -22,7 +22,7 @@ export default function TaskItem(props: Props) {
       />
       <p className={cn({ 'line-through': props.task.closed })}>{props.task.name}</p>
       {props.clearTask ? (
-        <div className="my-auto ml-auto" onClick={(e) => props.clearTask(e, props.task)}>
+        <div className="my-auto ml-auto" onClick={(e) => props.clearTask!(e, props.task)}>
           <MdClose />
         </div>
       ) : null}
