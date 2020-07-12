@@ -18,3 +18,18 @@ export const Task = {
     }
   },
 }
+export class TaskDragManager {
+  taskId: number | null
+  constructor() {
+    this.taskId = null
+  }
+  dragStart(taskId: number) {
+    this.taskId = taskId
+    console.log('drag start: ', this.taskId)
+  }
+
+  drop() {
+    this.taskId = null
+    console.log('drop', this.taskId)
+  }
+}

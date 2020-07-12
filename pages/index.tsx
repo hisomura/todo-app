@@ -4,7 +4,9 @@ import cn from 'classnames'
 import ToggleExpandIcon from '../components/ToggleExpandIcon'
 import { MdClearAll } from 'react-icons/md'
 import TaskItem from '../components/TaskItem'
-import { Task } from '../lib/task'
+import { Task, TaskDragManager } from '../lib/task'
+
+const dragManager = new TaskDragManager()
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -26,6 +28,14 @@ export default function Home() {
     setFormText('')
   }
 
+  const closeTask = (taskId: number, closed = true) => {
+    const newTasks = tasks.map((task) => {
+      if (task.id !== taskId) return task
+      return { ...task, closed: closed }
+    })
+    setTasks(newTasks)
+  }
+
   const toggleTask = (event: MouseEvent<HTMLInputElement>, target: Task) => {
     const newTasks = tasks.map((task) => {
       if (task.id !== target.id) return task
@@ -44,31 +54,54 @@ export default function Home() {
         <div className="py-4">
           <h1>Todo</h1>
         </div>
-        <ul className="divide-y">
-          <li className="py-2">
-            + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
-          </li>
-          {tasks
-            .filter((task) => !task.closed)
-            .map((task, index) => (
-              <TaskItem key={task.id} task={task} index={index} toggleTask={toggleTask} />
-            ))}
-        </ul>
-
-        <div className="mt-2 py-1 flex justify-between">
-          <h2>closed</h2>
-          <div className="ml-auto mr-2" onClick={() => setTasks(tasks.filter((item) => !item.closed))}>
-            <MdClearAll />
-          </div>
-          <ToggleExpandIcon expanded={foldingClosedTasks} onClick={() => setFoldingClosedTasks(!foldingClosedTasks)} />
+        <div className="open-area">
+          <ul className="divide-y">
+            <li className="py-2">
+              + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
+            </li>
+            {tasks
+              .filter((task) => !task.closed)
+              .map((task, index) => (
+                <TaskItem key={task.id} task={task} index={index} toggleTask={toggleTask} dragManager={dragManager} />
+              ))}
+          </ul>
         </div>
-        <ul className={cn({ 'divide-y': true, hidden: foldingClosedTasks })}>
-          {tasks
-            .filter((task) => task.closed)
-            .map((task, index) => (
-              <TaskItem key={task.id} task={task} index={index} toggleTask={toggleTask} clearTask={clearTask} />
-            ))}
-        </ul>
+
+        <div
+          className="closed-area"
+          onDragOver={(e) => e.preventDefault()} // TODO why it's necessary
+          onDrop={(e) => {
+            e.stopPropagation() // TODO why it's necessary
+            e.preventDefault() // TODO Remove
+            closeTask(dragManager.taskId!)
+            dragManager.drop()
+          }}
+        >
+          <div className="mt-2 py-1 flex justify-between">
+            <h2>closed</h2>
+            <div className="ml-auto mr-2" onClick={() => setTasks(tasks.filter((item) => !item.closed))}>
+              <MdClearAll />
+            </div>
+            <ToggleExpandIcon
+              expanded={foldingClosedTasks}
+              onClick={() => setFoldingClosedTasks(!foldingClosedTasks)}
+            />
+          </div>
+          <ul className={cn({ 'divide-y': true, hidden: foldingClosedTasks })}>
+            {tasks
+              .filter((task) => task.closed)
+              .map((task, index) => (
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  index={index}
+                  toggleTask={toggleTask}
+                  clearTask={clearTask}
+                  dragManager={dragManager}
+                />
+              ))}
+          </ul>
+        </div>
       </div>
     </div>
   )
