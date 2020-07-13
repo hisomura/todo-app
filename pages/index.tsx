@@ -54,7 +54,7 @@ export default function Home() {
         <div className="py-4">
           <h1>Todo</h1>
         </div>
-        <div className="open-area">
+        <div>
           <ul className="divide-y">
             <li className="py-2">
               + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
@@ -68,7 +68,7 @@ export default function Home() {
         </div>
 
         <div
-          className="closed-area"
+          data-testid='closed-task-area'
           onDragOver={(e) => e.preventDefault()} // TODO why it's necessary
           onDrop={(e) => {
             e.stopPropagation() // TODO why it's necessary

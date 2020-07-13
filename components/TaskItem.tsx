@@ -18,7 +18,7 @@ export default function TaskItem(props: Props) {
       draggable
       key={props.task.id}
       className="flex py-2"
-      data-testid={props.clearTask ? 'task-item-closed' : 'task-item-open'}
+      data-testid={props.clearTask ? 'closed-task-item' : 'open-task-item'}
       onDragStart={(_e) => {
         props.dragManager.dragStart(props.task.id)
       }}
