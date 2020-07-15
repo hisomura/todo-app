@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "test": "jest  --maxWorkers=1"
   },
   "dependencies": {
     "classnames": "^2.2.6",

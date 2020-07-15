@@ -1,23 +1,24 @@
-import { moveItem } from './array'
+import { moved } from './array'
 
-describe('moveItem()', () => {
-  test('1', () => {
-    const newItems = moveItem([0, 1, 2, 3, 4, 5], 2, 4)
-    expect(newItems).toEqual([0, 1, 3, 2, 4, 5])
-  })
+describe('moved()', () => {
+  const testArray = [0, 1, 2, 3, 4, 5]
 
-  test('2', () => {
-    const newItems2 = moveItem([0, 1, 2, 3, 4, 5], 0, 5)
-    expect(newItems2).toEqual([1, 2, 3, 4, 0, 5])
-  })
+  test.each([
+    [0, 0, [0, 1, 2, 3, 4, 5]],
+    [0, 1, [0, 1, 2, 3, 4, 5]],
+    [0, 2, [1, 0, 2, 3, 4, 5]],
+    [0, 5, [1, 2, 3, 4, 0, 5]],
+    [0, 6, [1, 2, 3, 4, 5, 0]],
 
-  test('2', () => {
-    const newItems2 = moveItem([0, 1, 2, 3, 4, 5], 0, 6)
-    expect(newItems2).toEqual([1, 2, 3, 4, 5, 0])
-  })
+    [5, 0, [5, 0, 1, 2, 3, 4]],
+    [5, 1, [0, 5, 1, 2, 3, 4]],
 
-  test('3', () => {
-    const newItems = moveItem([0, 1, 2, 3, 4, 5], 5, 2)
-    expect(newItems).toEqual([0, 1, 5, 2, 3, 4])
+    [10, 2, testArray],
+    [-10, 2, testArray],
+    [2, 10, testArray],
+    [2, -10, testArray],
+    [3, 3, testArray],
+  ])('moved(%i, %i)', (a, b, expected) => {
+    expect(moved(testArray, a, b)).toEqual(expected)
   })
 })
