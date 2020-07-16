@@ -15,13 +15,12 @@ type Props = {
 export default function TaskItem(props: Props) {
   return (
     <li
-      draggable
+      draggable={!props.task.closed}
       key={props.task.id}
       className="flex py-2"
-      data-testid={props.clearTask ? 'closed-task-item' : 'open-task-item'}
-      onDragStart={(_e) => {
-        props.dragManager.dragStart(props.task.id)
-      }}
+      data-testid={props.task.closed ? 'closed-task-item' : 'open-task-item'}
+      onDragOver={props.task.closed ? undefined : (_e) => props.dragManager.dragOverTaskItem(props.index)}
+      onDragStart={props.task.closed ? undefined : (_e) => props.dragManager.dragStart(props.task.id, props.index)}
     >
       <input
         className="my-auto mr-2"

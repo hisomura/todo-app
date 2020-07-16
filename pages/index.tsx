@@ -1,12 +1,13 @@
-import React from 'react'
-import { ChangeEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
+import React, { ChangeEventHandler, DragEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 import cn from 'classnames'
 import ToggleExpandIcon from '../components/ToggleExpandIcon'
 import { MdClearAll } from 'react-icons/md'
 import TaskItem from '../components/TaskItem'
 import { Task, TaskDragManager } from '../lib/task'
+import { moved } from '../lib/array'
 
 const dragManager = new TaskDragManager()
+const preventDefault: DragEventHandler = (event) => event.preventDefault()
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -48,13 +49,27 @@ export default function Home() {
     setTasks(tasks.filter((task) => task.id !== target.id))
   }
 
+  const moveTask = (taskId: number, targetIndex: number) => {
+    const taskIndex = tasks.findIndex((t) => t.id === taskId)
+    setTasks(moved(tasks, taskIndex, targetIndex))
+  }
+
   return (
     <div className="max-w-xl mx-auto py-8">
       <div className="shadow-xl rounded px-4 pb-4">
         <div className="py-4">
           <h1>Todo</h1>
         </div>
-        <div>
+        <div
+          data-testid="open-task-area"
+          onDragOver={preventDefault}
+          onDrop={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+            moveTask(dragManager.taskId!, dragManager.nextIndex!)
+            dragManager.drop()
+          }}
+        >
           <ul className="divide-y">
             <li className="py-2">
               + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
@@ -68,7 +83,7 @@ export default function Home() {
         </div>
 
         <div
-          data-testid='closed-task-area'
+          data-testid="closed-task-area"
           onDragOver={(e) => e.preventDefault()} // TODO why it's necessary
           onDrop={(e) => {
             e.stopPropagation() // TODO why it's necessary

@@ -18,18 +18,27 @@ export const Task = {
     }
   },
 }
+
 export class TaskDragManager {
   taskId: number | null
+  nextIndex: number | null
   constructor() {
     this.taskId = null
+    this.nextIndex = null
   }
-  dragStart(taskId: number) {
+  dragStart(taskId: number, index: number) {
     this.taskId = taskId
-    console.log('drag start: ', this.taskId)
+    this.nextIndex = index
   }
 
   drop() {
     this.taskId = null
-    console.log('drop', this.taskId)
+    this.nextIndex = null
+  }
+
+  dragOverTaskItem(nextIndex: number) {
+    if (nextIndex !== this.nextIndex) {
+      this.nextIndex = nextIndex
+    }
   }
 }
