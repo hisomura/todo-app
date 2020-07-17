@@ -1,10 +1,11 @@
 import React, { ChangeEventHandler, DragEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 import cn from 'classnames'
-import ToggleExpandIcon from '../components/ToggleExpandIcon'
 import { MdClearAll } from 'react-icons/md'
-import TaskItem from '../components/TaskItem'
 import { Task, TaskDragManager } from '../lib/task'
 import { moved } from '../lib/array'
+import ToggleExpandIcon from '../components/ToggleExpandIcon'
+import OpenTaskItem from '../components/OpenTaskItem'
+import ClosedTaskItem from '../components/ClosedTaskItem'
 
 const dragManager = new TaskDragManager()
 const preventDefault: DragEventHandler = (event) => event.preventDefault()
@@ -77,7 +78,13 @@ export default function Home() {
             {tasks
               .filter((task) => !task.closed)
               .map((task, index) => (
-                <TaskItem key={task.id} task={task} index={index} toggleTask={toggleTask} dragManager={dragManager} />
+                <OpenTaskItem
+                  key={task.id}
+                  task={task}
+                  index={index}
+                  toggleTask={toggleTask}
+                  dragManager={dragManager}
+                />
               ))}
           </ul>
         </div>
@@ -105,15 +112,8 @@ export default function Home() {
           <ul className={cn({ 'divide-y': true, hidden: foldingClosedTasks })}>
             {tasks
               .filter((task) => task.closed)
-              .map((task, index) => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  index={index}
-                  toggleTask={toggleTask}
-                  clearTask={clearTask}
-                  dragManager={dragManager}
-                />
+              .map((task) => (
+                <ClosedTaskItem key={task.id} task={task} toggleTask={toggleTask} clearTask={clearTask} />
               ))}
           </ul>
         </div>
