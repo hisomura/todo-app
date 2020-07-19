@@ -1,12 +1,12 @@
 import React from 'react'
 import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import Home from './index'
+import Todo from './Todo'
 
 afterEach(cleanup)
 
 test('Add and close a task.', async () => {
-  render(<Home />)
+  render(<Todo />)
 
   // Add a task.
   expect(screen.queryByText(/Add Test/)).toBeNull()
@@ -23,7 +23,7 @@ test('Add and close a task.', async () => {
 })
 
 test('Add and close a task by drag and drop.', async () => {
-  render(<Home />)
+  render(<Todo />)
 
   // Add a task.
   expect(screen.queryByText(/Add Test/)).toBeNull()
