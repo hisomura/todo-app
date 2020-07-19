@@ -1,5 +1,5 @@
-import React, { MouseEvent, useState } from 'react'
-import { Task, TaskDragManager } from '../lib/task'
+import React, { MouseEvent } from 'react'
+import { Task } from '../lib/task'
 
 type Props = {
   key: number
@@ -7,11 +7,13 @@ type Props = {
   index: number
   toggleTask: (event: MouseEvent<HTMLInputElement>, task: Task) => void
   clearTask?: (event: MouseEvent<HTMLElement>, task: Task) => void
-  dragManager: TaskDragManager
+  setDraggedTaskNextIndex: (index: number) => void
+  setDraggedTaskId: (index: number) => void
+  isNext: boolean
 }
 
 export default function OpenTaskItem(props: Props) {
-  const [className, setClassName] = useState('flex py-2')
+  const className = 'flex py-2 ' + (props.isNext ? 'border-t-2 border-grey-500' : 'border-t')
   return (
     <li
       draggable={true}
@@ -23,11 +25,11 @@ export default function OpenTaskItem(props: Props) {
         const rect = (e.target as HTMLLIElement).getBoundingClientRect()
         const middleHeight = rect.top + rect.height / 2
         const isUpper = middleHeight > e.clientY
-        const newClassName = 'flex py-2 ' + (isUpper ? 'border-t-2' : 'border-b-2')
-        setClassName(newClassName) // TODO currently not working
-        props.dragManager.dragOverTaskItem(isUpper ? props.index : props.index + 1)
+        props.setDraggedTaskNextIndex(isUpper ? props.index : props.index + 1)
       }}
-      onDragStart={(_e) => props.dragManager.dragStart(props.task.id, props.index)}
+      onDragStart={(_e) => {
+        props.setDraggedTaskId(props.task.id)
+      }}
     >
       <input className="my-auto mr-2" type="checkbox" onClick={(e) => props.toggleTask(e, props.task)} />
       <p>{props.task.name}</p>

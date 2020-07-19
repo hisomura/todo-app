@@ -1,19 +1,20 @@
 import React, { ChangeEventHandler, DragEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
 import cn from 'classnames'
 import { MdClearAll } from 'react-icons/md'
-import { Task, TaskDragManager } from '../lib/task'
+import { Task } from '../lib/task'
 import { moved } from '../lib/array'
 import ToggleExpandIcon from '../components/ToggleExpandIcon'
 import OpenTaskItem from '../components/OpenTaskItem'
 import ClosedTaskItem from '../components/ClosedTaskItem'
 
-const dragManager = new TaskDragManager()
 const preventDefault: DragEventHandler = (event) => event.preventDefault()
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [formText, setFormText] = useState('')
   const [foldingClosedTasks, setFoldingClosedTasks] = useState(true)
+  const [draggedTaskNextIndex, setDraggedTaskNextIndex] = useState<number | null>(null)
+  const [draggedTaskId, setDraggedTaskId] = useState<number | null>(null)
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/ja/docs/Web/API/Event/currentTarget
@@ -52,7 +53,11 @@ export default function Home() {
 
   const moveTask = (taskId: number, targetIndex: number) => {
     const taskIndex = tasks.findIndex((t) => t.id === taskId)
-    setTasks(moved(tasks, taskIndex, targetIndex))
+    const result = moved(tasks, taskIndex, targetIndex)
+    console.log(result)
+    setTasks(result)
+    setDraggedTaskNextIndex(null)
+    setDraggedTaskId(null)
   }
 
   return (
@@ -67,11 +72,10 @@ export default function Home() {
           onDrop={(e) => {
             e.stopPropagation()
             e.preventDefault()
-            moveTask(dragManager.taskId!, dragManager.nextIndex!)
-            dragManager.drop()
+            if (draggedTaskId !== null && draggedTaskNextIndex !== null) moveTask(draggedTaskId, draggedTaskNextIndex)
           }}
         >
-          <ul className="divide-y">
+          <ul>
             <li className="py-2">
               + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
             </li>
@@ -83,7 +87,9 @@ export default function Home() {
                   task={task}
                   index={index}
                   toggleTask={toggleTask}
-                  dragManager={dragManager}
+                  isNext={index === draggedTaskNextIndex}
+                  setDraggedTaskNextIndex={setDraggedTaskNextIndex}
+                  setDraggedTaskId={setDraggedTaskId}
                 />
               ))}
           </ul>
@@ -95,8 +101,9 @@ export default function Home() {
           onDrop={(e) => {
             e.stopPropagation() // TODO why it's necessary
             e.preventDefault() // TODO Remove
-            closeTask(dragManager.taskId!)
-            dragManager.drop()
+            closeTask(draggedTaskId!)
+            setDraggedTaskId(null)
+            setDraggedTaskNextIndex(null)
           }}
         >
           <div className="mt-2 py-1 flex justify-between">
