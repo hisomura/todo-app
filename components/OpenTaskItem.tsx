@@ -13,7 +13,7 @@ type Props = {
 }
 
 export default function OpenTaskItem(props: Props) {
-  const className = 'flex py-2 ' + (props.isNext ? 'border-t-2 border-grey-500' : 'border-t')
+  const className = 'flex py-2 ' + (props.isNext ? 'border-t-2 border-blue-500' : 'border-t')
   return (
     <li
       draggable={true}

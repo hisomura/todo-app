@@ -92,6 +92,7 @@ export default function Todo() {
                   setDraggedTaskId={setDraggedTaskId}
                 />
               ))}
+            <li className={draggedTaskNextIndex === tasks.length ? 'border-t-2 border-blue-500' : 'border-t'} />
           </ul>
         </div>
 
