@@ -1,9 +1,15 @@
-import React, { ChangeEventHandler, DragEventHandler, KeyboardEventHandler, MouseEvent, useState } from 'react'
-import cn from 'classnames'
+import React, {
+  ChangeEventHandler,
+  DragEventHandler,
+  KeyboardEventHandler,
+  MouseEvent,
+  useReducer,
+  useState,
+} from 'react'
 import { MdClearAll } from 'react-icons/md'
 import { Task } from '../lib/task'
 import { moved } from '../lib/array'
-import ToggleExpandIcon from '../components/ToggleExpandIcon'
+import ToggleFoldingButton from './ToggleFoldingButton'
 import OpenTaskItem from '../components/OpenTaskItem'
 import ClosedTaskItem from '../components/ClosedTaskItem'
 
@@ -12,7 +18,7 @@ const preventDefault: DragEventHandler = (event) => event.preventDefault()
 export default function Todo() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [formText, setFormText] = useState('')
-  const [foldingClosedTasks, setFoldingClosedTasks] = useState(true)
+  const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
   const [draggedTaskNextIndex, setDraggedTaskNextIndex] = useState<number | null>(null)
   const [draggedTaskId, setDraggedTaskId] = useState<number | null>(null)
 
@@ -94,12 +100,9 @@ export default function Todo() {
             <div className="ml-auto mr-2" onClick={() => setTasks(tasks.filter((item) => !item.closed))}>
               <MdClearAll />
             </div>
-            <ToggleExpandIcon
-              expanded={foldingClosedTasks}
-              onClick={() => setFoldingClosedTasks(!foldingClosedTasks)}
-            />
+            <ToggleFoldingButton folding={foldingClosedTasks} onClick={toggleFoldingClosedTasks} />
           </div>
-          <ul className={cn({ 'divide-y': true, hidden: foldingClosedTasks })}>
+          <ul className="divide-y" hidden={foldingClosedTasks} data-testid="closed-task-list">
             {tasks
               .filter((task) => task.closed)
               .map((task) => (
