@@ -31,14 +31,6 @@ export default function Todo() {
     setFormText('')
   }
 
-  const closeTask = (taskId: number, closed = true) => {
-    const newTasks = tasks.map((task) => {
-      if (task.id !== taskId) return task
-      return { ...task, closed: closed }
-    })
-    setTasks(newTasks)
-  }
-
   const toggleTask = (event: MouseEvent<HTMLInputElement>, target: Task) => {
     const newTasks = tasks.map((task) => {
       if (task.id !== target.id) return task
@@ -96,17 +88,7 @@ export default function Todo() {
           </ul>
         </div>
 
-        <div
-          data-testid="closed-task-area"
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.stopPropagation() // TODO why it's necessary
-            e.preventDefault() // TODO Remove
-            closeTask(draggedTaskId!)
-            setDraggedTaskId(null)
-            setDraggedTaskNextIndex(null)
-          }}
-        >
+        <div data-testid="closed-task-area">
           <div className="mt-2 py-1 flex justify-between">
             <h2>closed</h2>
             <div className="ml-auto mr-2" onClick={() => setTasks(tasks.filter((item) => !item.closed))}>
