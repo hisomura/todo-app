@@ -1,12 +1,11 @@
-import React, { MouseEvent } from 'react'
+import React from 'react'
 import { Task } from '../lib/task'
 
 type Props = {
   key: number
   task: Task
   index: number
-  toggleTask: (event: MouseEvent<HTMLInputElement>, task: Task) => void
-  clearTask?: (event: MouseEvent<HTMLElement>, task: Task) => void
+  toggleTask: (task: Task) => void
   dragStart: (taskId: number) => void
   setNextIndex: (nextIndex: number) => void
   isNext: boolean
@@ -29,7 +28,7 @@ export default function OpenTaskItem(props: Props) {
       }}
       onDragStart={() => props.dragStart(props.task.id)}
     >
-      <input className="my-auto mr-2" type="checkbox" onClick={(e) => props.toggleTask(e, props.task)} />
+      <input className="my-auto mr-2" type="checkbox" onClick={() => props.toggleTask(props.task)} />
       <p>{props.task.name}</p>
     </li>
   )

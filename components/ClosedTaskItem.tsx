@@ -1,12 +1,12 @@
-import React, { MouseEvent } from 'react'
+import React from 'react'
 import { MdClose } from 'react-icons/md'
 import { Task } from '../lib/task'
 
 type Props = {
   key: number
   task: Task
-  toggleTask: (event: MouseEvent<HTMLInputElement>, task: Task) => void
-  clearTask: (event: MouseEvent<HTMLElement>, task: Task) => void
+  toggleTask: (task: Task) => void
+  clearTask: (task: Task) => void
 }
 
 export default function ClosedTaskItem(props: Props) {
@@ -15,11 +15,11 @@ export default function ClosedTaskItem(props: Props) {
       <input
         className="my-auto mr-2"
         type="checkbox"
-        onClick={(e) => props.toggleTask(e, props.task)}
+        onClick={() => props.toggleTask(props.task)}
         defaultChecked={true}
       />
       <p className="line-through">{props.task.name}</p>
-      <div className="my-auto ml-auto" onClick={(e) => props.clearTask(e, props.task)}>
+      <div className="my-auto ml-auto" onClick={() => props.clearTask(props.task)}>
         <MdClose />
       </div>
     </li>

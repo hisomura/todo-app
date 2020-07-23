@@ -1,11 +1,4 @@
-import React, {
-  ChangeEventHandler,
-  DragEventHandler,
-  KeyboardEventHandler,
-  MouseEvent,
-  useReducer,
-  useState,
-} from 'react'
+import React, { ChangeEventHandler, DragEventHandler, KeyboardEventHandler, useReducer, useState } from 'react'
 import { MdClearAll } from 'react-icons/md'
 import { Task, TaskDragStatus } from '../lib/task'
 import { moved } from '../lib/array'
@@ -15,7 +8,7 @@ import ClosedTaskItem from '../components/ClosedTaskItem'
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault()
 
-function useDragState(): [TaskDragStatus | null, (taskId: number) => void, (nextIndex: number) => void, () => void] {
+function useDragState() {
   const [dragStatus, setDragStatus] = useState<TaskDragStatus | null>(null)
 
   const dragStart = (taskId: TaskDragStatus['taskId']) => {
@@ -29,11 +22,42 @@ function useDragState(): [TaskDragStatus | null, (taskId: number) => void, (next
 
   const drop = () => setDragStatus(null)
 
-  return [dragStatus, dragStart, setNextIndex, drop]
+  return [dragStatus, dragStart, setNextIndex, drop] as const
+}
+
+function useTasks() {
+  const [tasks, setTasks] = useState<Task[]>([])
+
+  const addTask = (task: Task) => {
+    setTasks([...tasks, task])
+  }
+
+  const toggleTask = (target: Task) => {
+    const newTasks = tasks.map((task) => {
+      if (task.id !== target.id) return task
+      return { ...task, closed: !task.closed }
+    })
+    setTasks(newTasks)
+  }
+
+  const clearTask = (target: Task) => {
+    setTasks(tasks.filter((task) => task.id !== target.id))
+  }
+
+  const clearAllClosedTasks = () => {
+    setTasks(tasks.filter((item) => !item.closed))
+  }
+
+  const moveTask = (status: TaskDragStatus) => {
+    const taskIndex = tasks.findIndex((t) => t.id === status.taskId)
+    setTasks(moved(tasks, taskIndex, status.nextIndex))
+  }
+
+  return [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] as const
 }
 
 export default function Todo() {
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks()
   const [formText, setFormText] = useState('')
   const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
   const [dragStatus, dragStart, setNextIndex, drop] = useDragState()
@@ -49,27 +73,8 @@ export default function Todo() {
     if (event.key !== 'Enter') return
     if (formText === '') return
     event.currentTarget.value = ''
-    setTasks([...tasks, Task.create(formText)])
+    addTask(Task.create(formText))
     setFormText('')
-  }
-
-  const toggleTask = (event: MouseEvent<HTMLInputElement>, target: Task) => {
-    const newTasks = tasks.map((task) => {
-      if (task.id !== target.id) return task
-      return { ...task, closed: event.currentTarget.checked }
-    })
-    setTasks(newTasks)
-  }
-
-  const clearTask = (_event: MouseEvent<HTMLElement>, target: Task) => {
-    setTasks(tasks.filter((task) => task.id !== target.id))
-  }
-
-  const moveTask = (status: TaskDragStatus) => {
-    const taskIndex = tasks.findIndex((t) => t.id === status.taskId)
-    const result = moved(tasks, taskIndex, status.nextIndex)
-    setTasks(result)
-    drop()
   }
 
   return (
@@ -85,6 +90,7 @@ export default function Todo() {
             e.stopPropagation()
             e.preventDefault()
             if (dragStatus) moveTask(dragStatus)
+            drop()
           }}
         >
           <ul>
@@ -111,7 +117,7 @@ export default function Todo() {
         <div data-testid="closed-task-area">
           <div className="mt-2 py-1 flex justify-between">
             <h2>closed</h2>
-            <div className="ml-auto mr-2" onClick={() => setTasks(tasks.filter((item) => !item.closed))}>
+            <div className="ml-auto mr-2" onClick={clearAllClosedTasks}>
               <MdClearAll />
             </div>
             <ToggleFoldingButton folding={foldingClosedTasks} onClick={toggleFoldingClosedTasks} />
