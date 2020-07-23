@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react'
 import { MdClearAll } from 'react-icons/md'
-import { Task } from '../lib/task'
+import { Task, TaskDragStatus } from '../lib/task'
 import { moved } from '../lib/array'
 import ToggleFoldingButton from './ToggleFoldingButton'
 import OpenTaskItem from '../components/OpenTaskItem'
@@ -15,12 +15,28 @@ import ClosedTaskItem from '../components/ClosedTaskItem'
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault()
 
+function useDragState(): [TaskDragStatus | null, (taskId: number) => void, (nextIndex: number) => void, () => void] {
+  const [dragStatus, setDragStatus] = useState<TaskDragStatus | null>(null)
+
+  const dragStart = (taskId: TaskDragStatus['taskId']) => {
+    setDragStatus({ taskId, nextIndex: taskId })
+  }
+
+  const setNextIndex = (nextIndex: TaskDragStatus['nextIndex']) => {
+    if (!dragStatus) throw new Error(' In spite of not starting drag and drop, setNextIndex() called.')
+    setDragStatus({ ...dragStatus, nextIndex })
+  }
+
+  const drop = () => setDragStatus(null)
+
+  return [dragStatus, dragStart, setNextIndex, drop]
+}
+
 export default function Todo() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [formText, setFormText] = useState('')
   const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
-  const [draggedTaskNextIndex, setDraggedTaskNextIndex] = useState<number | null>(null)
-  const [draggedTaskId, setDraggedTaskId] = useState<number | null>(null)
+  const [dragStatus, dragStart, setNextIndex, drop] = useDragState()
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/ja/docs/Web/API/Event/currentTarget
@@ -49,13 +65,11 @@ export default function Todo() {
     setTasks(tasks.filter((task) => task.id !== target.id))
   }
 
-  const moveTask = (taskId: number, targetIndex: number) => {
-    const taskIndex = tasks.findIndex((t) => t.id === taskId)
-    const result = moved(tasks, taskIndex, targetIndex)
-    console.log(result)
+  const moveTask = (status: TaskDragStatus) => {
+    const taskIndex = tasks.findIndex((t) => t.id === status.taskId)
+    const result = moved(tasks, taskIndex, status.nextIndex)
     setTasks(result)
-    setDraggedTaskNextIndex(null)
-    setDraggedTaskId(null)
+    drop()
   }
 
   return (
@@ -70,7 +84,7 @@ export default function Todo() {
           onDrop={(e) => {
             e.stopPropagation()
             e.preventDefault()
-            if (draggedTaskId !== null && draggedTaskNextIndex !== null) moveTask(draggedTaskId, draggedTaskNextIndex)
+            if (dragStatus) moveTask(dragStatus)
           }}
         >
           <ul>
@@ -85,12 +99,12 @@ export default function Todo() {
                   task={task}
                   index={index}
                   toggleTask={toggleTask}
-                  isNext={index === draggedTaskNextIndex}
-                  setDraggedTaskNextIndex={setDraggedTaskNextIndex}
-                  setDraggedTaskId={setDraggedTaskId}
+                  isNext={index === dragStatus?.nextIndex}
+                  dragStart={dragStart}
+                  setNextIndex={setNextIndex}
                 />
               ))}
-            <li className={draggedTaskNextIndex === tasks.length ? 'border-t-2 border-blue-500' : 'border-t'} />
+            <li className={dragStatus?.nextIndex === tasks.length ? 'border-t-2 border-blue-500' : 'border-t'} />
           </ul>
         </div>
 
