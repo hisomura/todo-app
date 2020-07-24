@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, DragEventHandler, KeyboardEventHandler, useReducer, useState } from 'react'
+import React, { DragEventHandler, KeyboardEventHandler, useReducer, useState } from 'react'
 import { MdClearAll } from 'react-icons/md'
 import { Task, TaskDragStatus } from '../lib/task'
 import { moved } from '../lib/array'
@@ -58,23 +58,16 @@ function useTasks() {
 
 export default function Todo() {
   const [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks()
-  const [formText, setFormText] = useState('')
   const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
   const [dragStatus, dragStart, setNextIndex, drop] = useDragState()
-
-  const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    // https://developer.mozilla.org/ja/docs/Web/API/Event/currentTarget
-    setFormText(event.currentTarget.value)
-  }
 
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
     // if (event.keyCode === 229) return
     if (event.key !== 'Enter') return
-    if (formText === '') return
+    if (event.currentTarget.value === '') return
+    addTask(Task.create(event.currentTarget.value))
     event.currentTarget.value = ''
-    addTask(Task.create(formText))
-    setFormText('')
   }
 
   return (
@@ -95,7 +88,7 @@ export default function Todo() {
         >
           <ul>
             <li className="py-2">
-              + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} onChange={onChange} type="text" />
+              + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} type="text" />
             </li>
             {tasks
               .filter((task) => !task.closed)
