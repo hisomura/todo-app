@@ -117,12 +117,12 @@ export default function Todo() {
         <div data-testid="closed-task-area">
           <div className="mt-2 py-1 flex justify-between">
             <h2>closed</h2>
-            <div className="ml-auto mr-2" onClick={clearAllClosedTasks}>
+            <div className="ml-auto mr-2" onClick={clearAllClosedTasks} data-testid="clear-all-closed-tasks">
               <MdClearAll />
             </div>
             <ToggleFoldingButton folding={foldingClosedTasks} onClick={toggleFoldingClosedTasks} />
           </div>
-          <ul className="divide-y" hidden={foldingClosedTasks} data-testid="closed-task-list">
+          <ul className="divide-y" hidden={foldingClosedTasks}>
             {tasks
               .filter((task) => task.closed)
               .map((task) => (
