@@ -17,6 +17,7 @@ function useDragState() {
 
   const setNextIndex = (nextIndex: TaskDragStatus['nextIndex']) => {
     if (!dragStatus) throw new Error(' In spite of not starting drag and drop, setNextIndex() called.')
+    if (dragStatus.nextIndex === nextIndex) return
     setDragStatus({ ...dragStatus, nextIndex })
   }
 
