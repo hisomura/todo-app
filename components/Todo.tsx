@@ -20,9 +20,9 @@ function useDragState() {
     setDragStatus({ ...dragStatus, nextIndex })
   }
 
-  const drop = () => setDragStatus(null)
+  const dragEnd = () => setDragStatus(null)
 
-  return [dragStatus, dragStart, setNextIndex, drop] as const
+  return [dragStatus, dragStart, setNextIndex, dragEnd] as const
 }
 
 function useTasks() {
@@ -59,7 +59,7 @@ function useTasks() {
 export default function Todo() {
   const [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks()
   const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
-  const [dragStatus, dragStart, setNextIndex, drop] = useDragState()
+  const [dragStatus, dragStart, setNextIndex, dragEnd] = useDragState()
 
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
@@ -83,7 +83,7 @@ export default function Todo() {
             e.stopPropagation()
             e.preventDefault()
             if (dragStatus) moveTask(dragStatus)
-            drop()
+            dragEnd()
           }}
         >
           <ul>
@@ -100,6 +100,7 @@ export default function Todo() {
                   toggleTask={toggleTask}
                   isNext={index === dragStatus?.nextIndex}
                   dragStart={dragStart}
+                  dragEnd={dragEnd}
                   setNextIndex={setNextIndex}
                 />
               ))}

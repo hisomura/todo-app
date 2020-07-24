@@ -8,6 +8,7 @@ type Props = {
   toggleTask: (task: Task) => void
   dragStart: (taskId: number) => void
   setNextIndex: (nextIndex: number) => void
+  dragEnd: () => void
   isNext: boolean
 }
 
@@ -19,6 +20,7 @@ export default function OpenTaskItem(props: Props) {
       key={props.task.id}
       className={className}
       data-testid="open-task-item"
+      onDragStart={() => props.dragStart(props.task.id)}
       onDragOver={(e) => {
         e.preventDefault()
         const rect = (e.target as HTMLLIElement).getBoundingClientRect()
@@ -26,7 +28,7 @@ export default function OpenTaskItem(props: Props) {
         const isUpper = middleHeight > e.clientY
         props.setNextIndex(isUpper ? props.index : props.index + 1)
       }}
-      onDragStart={() => props.dragStart(props.task.id)}
+      onDragEnd={props.dragEnd}
     >
       <input className="my-auto mr-2" type="checkbox" onClick={() => props.toggleTask(props.task)} />
       <p>{props.task.name}</p>
