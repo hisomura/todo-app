@@ -2,12 +2,13 @@ import React from 'react'
 import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Todo from './Todo'
+import { Task } from '../lib/task'
 
 describe('Todo.test.tsx', () => {
   afterEach(cleanup)
 
   test('Add and close a task. Then expand closed task list. Then Reopen a task.', async () => {
-    render(<Todo />)
+    render(<Todo initialTasks={[]} />)
 
     // Add a task
     expect(screen.queryByText(/Add Test/)).toBeNull()
@@ -34,24 +35,22 @@ describe('Todo.test.tsx', () => {
     expect(screen.queryByTestId('closed-task-item')).not.toBeInTheDocument()
   })
 
-  test('Add two tasks and clear all.', async () => {
-    render(<Todo />)
+  test('Clear all closed tasks.', async () => {
+    render(
+      <Todo
+        initialTasks={[
+          Task.create('Wash dishes', true),
+          Task.create('Clean my room', true),
+          Task.create('Measure my body weight', true),
+        ]}
+      />
+    )
 
-    // Add two tasks
-    await userEvent.type(screen.getByRole('textbox'), 'Wash dishes.{enter}')
-    await userEvent.type(screen.getByRole('textbox'), 'Clean my room.{enter}')
-
-    // Close tasks
-    const checkBoxList = screen.getAllByRole('checkbox')
-    expect(checkBoxList).toHaveLength(2)
-    userEvent.click(checkBoxList[0])
-    userEvent.click(checkBoxList[1])
-
-    // Expand closed task list
-    expect((await screen.getAllByTestId('closed-task-item'))[0]).not.toBeVisible()
-    userEvent.click(screen.getByTestId('toggle-folding-closed-tasks-button'))
-    screen.getAllByTestId('closed-task-item').forEach((item) => {
-      expect(item).toBeVisible()
+    // Make sure closed tasks exist.
+    const closedTasks = screen.getAllByTestId('closed-task-item')
+    expect(closedTasks).toHaveLength(3)
+    closedTasks.forEach((item) => {
+      expect(item).toBeInTheDocument()
     })
 
     // Clear all closed tasks

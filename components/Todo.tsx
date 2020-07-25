@@ -26,8 +26,8 @@ function useDragState() {
   return [dragStatus, dragStart, setNextIndex, dragEnd] as const
 }
 
-function useTasks() {
-  const [tasks, setTasks] = useState<Task[]>([])
+function useTasks(initialTasks: Task[]) {
+  const [tasks, setTasks] = useState<Task[]>(initialTasks)
 
   const addTask = (task: Task) => {
     setTasks([...tasks, task])
@@ -57,8 +57,12 @@ function useTasks() {
   return [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] as const
 }
 
-export default function Todo() {
-  const [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks()
+type Props = {
+  initialTasks: Task[]
+}
+
+export default function Todo(props: Props) {
+  const [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks(props.initialTasks)
   const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
   const [dragStatus, dragStart, setNextIndex, dragEnd] = useDragState()
 
