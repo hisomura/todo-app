@@ -116,7 +116,12 @@ export default function Todo(props: Props) {
         <div data-testid="closed-task-area">
           <div className="mt-2 py-1 flex justify-between">
             <h2>closed</h2>
-            <div className="ml-auto mr-2" onClick={clearAllClosedTasks} data-testid="clear-all-closed-tasks">
+            <div
+              className="ml-auto mr-2"
+              hidden={foldingClosedTasks}
+              onClick={clearAllClosedTasks}
+              data-testid="clear-all-closed-tasks"
+            >
               <MdClearAll />
             </div>
             <ToggleFoldingButton folding={foldingClosedTasks} onClick={toggleFoldingClosedTasks} />
