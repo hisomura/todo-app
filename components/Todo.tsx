@@ -5,6 +5,7 @@ import { moved } from '../lib/array'
 import ToggleFoldingButton from './ToggleFoldingButton'
 import OpenTaskItem from '../components/OpenTaskItem'
 import ClosedTaskItem from '../components/ClosedTaskItem'
+import ClearAllModal from './ClearAllModal'
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault()
 
@@ -63,8 +64,9 @@ type Props = {
 
 export default function Todo(props: Props) {
   const [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks(props.initialTasks)
-  const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
   const [dragStatus, dragStart, setNextIndex, dragEnd] = useDragState()
+  const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
+  const [modalOpen, setModalOpen] = useState(false)
 
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
@@ -76,65 +78,68 @@ export default function Todo(props: Props) {
   }
 
   return (
-    <div className="max-w-xl mx-auto py-8">
-      <div className="shadow-xl rounded px-4 pb-4">
-        <div className="py-4">
-          <h1>Todo</h1>
-        </div>
-        <div
-          data-testid="open-task-area"
-          onDragOver={preventDefault}
-          onDrop={(e) => {
-            e.stopPropagation()
-            e.preventDefault()
-            if (dragStatus) moveTask(dragStatus)
-            dragEnd()
-          }}
-        >
-          <ul>
-            <li className="py-2">
-              + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} type="text" />
-            </li>
-            {tasks
-              .filter((task) => !task.closed)
-              .map((task, index) => (
-                <OpenTaskItem
-                  key={task.id}
-                  task={task}
-                  index={index}
-                  toggleTask={toggleTask}
-                  isNext={index === dragStatus?.nextIndex}
-                  dragStart={dragStart}
-                  dragEnd={dragEnd}
-                  setNextIndex={setNextIndex}
-                />
-              ))}
-            <li className={dragStatus?.nextIndex === tasks.length ? 'border-t-2 border-blue-500' : 'border-t'} />
-          </ul>
-        </div>
-
-        <div data-testid="closed-task-area">
-          <div className="mt-2 py-1 flex justify-between">
-            <h2>closed</h2>
-            <div
-              className="ml-auto mr-2"
-              hidden={foldingClosedTasks}
-              onClick={clearAllClosedTasks}
-              data-testid="clear-all-closed-tasks"
-            >
-              <MdClearAll />
-            </div>
-            <ToggleFoldingButton folding={foldingClosedTasks} onClick={toggleFoldingClosedTasks} />
+    <>
+      <div className="max-w-xl mx-auto py-8 z-0">
+        <div className="shadow-xl rounded px-4 pb-4">
+          <div className="py-4">
+            <h1>Todo</h1>
           </div>
-          <ul className="divide-y" hidden={foldingClosedTasks}>
-            {tasks
-              .filter((task) => task.closed)
-              .map((task) => (
-                <ClosedTaskItem key={task.id} task={task} toggleTask={toggleTask} clearTask={clearTask} />
-              ))}
-          </ul>
+          <div
+            data-testid="open-task-area"
+            onDragOver={preventDefault}
+            onDrop={(e) => {
+              e.stopPropagation()
+              e.preventDefault()
+              if (dragStatus) moveTask(dragStatus)
+              dragEnd()
+            }}
+          >
+            <ul>
+              <li className="py-2">
+                + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} type="text" />
+              </li>
+              {tasks
+                .filter((task) => !task.closed)
+                .map((task, index) => (
+                  <OpenTaskItem
+                    key={task.id}
+                    task={task}
+                    index={index}
+                    toggleTask={toggleTask}
+                    isNext={index === dragStatus?.nextIndex}
+                    dragStart={dragStart}
+                    dragEnd={dragEnd}
+                    setNextIndex={setNextIndex}
+                  />
+                ))}
+              <li className={dragStatus?.nextIndex === tasks.length ? 'border-t-2 border-blue-500' : 'border-t'} />
+            </ul>
+          </div>
+
+          <div data-testid="closed-task-area">
+            <div className="mt-2 py-1 flex justify-between">
+              <h2>closed</h2>
+              <div
+                className="ml-auto mr-2"
+                hidden={foldingClosedTasks || !tasks.some((task) => task.closed)}
+                onClick={() => setModalOpen(true)}
+                data-testid="clear-all-closed-tasks"
+              >
+                <MdClearAll />
+              </div>
+              <ToggleFoldingButton folding={foldingClosedTasks} onClick={toggleFoldingClosedTasks} />
+            </div>
+            <ul className="divide-y" hidden={foldingClosedTasks}>
+              {tasks
+                .filter((task) => task.closed)
+                .map((task) => (
+                  <ClosedTaskItem key={task.id} task={task} toggleTask={toggleTask} clearTask={clearTask} />
+                ))}
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
+      <ClearAllModal open={modalOpen} onClear={clearAllClosedTasks} onClose={() => setModalOpen(false)} />
+    </>
   )
 }

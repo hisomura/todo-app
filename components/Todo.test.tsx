@@ -54,7 +54,8 @@ describe('Todo.test.tsx', () => {
     })
 
     // Clear all closed tasks
-    userEvent.click(screen.getByTestId('clear-all-closed-tasks'))
+    userEvent.click(screen.getByTestId('clear-all-closed-tasks')) // Open a modal.
+    userEvent.click(await screen.findByText('Clear'))
     expect(screen.queryByTestId('closed-task-item')).not.toBeInTheDocument()
   })
 })
