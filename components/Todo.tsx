@@ -1,4 +1,4 @@
-import React, { DragEventHandler, KeyboardEventHandler, useReducer, useState } from 'react'
+import React, { DragEventHandler, KeyboardEventHandler, useEffect, useReducer, useState } from 'react'
 import { MdClearAll } from 'react-icons/md'
 import { Task, TaskDragStatus } from '../lib/task'
 import { moved } from '../lib/array'
@@ -6,6 +6,7 @@ import ToggleFoldingButton from './ToggleFoldingButton'
 import OpenTaskItem from '../components/OpenTaskItem'
 import ClosedTaskItem from '../components/ClosedTaskItem'
 import ClearAllModal from './ClearAllModal'
+import { LocalStorageTaskRepository } from '../lib/repository'
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault()
 
@@ -55,18 +56,27 @@ function useTasks(initialTasks: Task[]) {
     setTasks(moved(tasks, taskIndex, status.nextIndex))
   }
 
-  return [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] as const
+  return [tasks, setTasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] as const
 }
 
 type Props = {
   initialTasks: Task[]
 }
 
+const repository = new LocalStorageTaskRepository()
 export default function Todo(props: Props) {
-  const [tasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks(props.initialTasks)
+  const [tasks, setTasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks(props.initialTasks)
   const [dragStatus, dragStart, setNextIndex, dragEnd] = useDragState()
   const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
   const [modalOpen, setModalOpen] = useState(false)
+
+  useEffect(() => {
+    setTasks(repository.getTasks())
+  }, [])
+  useEffect(() => {
+    if (tasks.length === 0) return
+    repository.saveTasks(tasks)
+  })
 
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
