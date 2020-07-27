@@ -6,7 +6,7 @@ import ToggleFoldingButton from './ToggleFoldingButton'
 import OpenTaskItem from '../components/OpenTaskItem'
 import ClosedTaskItem from '../components/ClosedTaskItem'
 import ClearAllModal from './ClearAllModal'
-import { LocalStorageTaskRepository } from '../lib/repository'
+import { TaskRepository } from '../lib/repository'
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault()
 
@@ -60,30 +60,24 @@ function useTasks(initialTasks: Task[]) {
 }
 
 type Props = {
-  initialTasks: Task[]
+  repository: TaskRepository
 }
 
-const repository = new LocalStorageTaskRepository()
 export default function Todo(props: Props) {
-  const [tasks, setTasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks(props.initialTasks)
+  const [tasks, , addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks(props.repository.getTasks())
   const [dragStatus, dragStart, setNextIndex, dragEnd] = useDragState()
   const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
   const [modalOpen, setModalOpen] = useState(false)
 
-  useEffect(() => {
-    setTasks(repository.getTasks())
-  }, [])
-  useEffect(() => {
-    if (tasks.length === 0) return
-    repository.saveTasks(tasks)
-  })
+  useEffect(() => props.repository.saveTasks(tasks))
 
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
     // if (event.keyCode === 229) return
     if (event.key !== 'Enter') return
     if (event.currentTarget.value === '') return
-    addTask(Task.create(event.currentTarget.value))
+    const maxId = Math.max(...tasks.map((task) => task.id)) // FIXME
+    addTask(Task.create(maxId + 1, event.currentTarget.value))
     event.currentTarget.value = ''
   }
 
