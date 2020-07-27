@@ -1,5 +1,3 @@
-import index from 'jest-leak-detector'
-
 export const moved = <T>(items: T[], itemIndex: number, targetIndex: number) => {
   const item = items[itemIndex]
   if (
