@@ -76,7 +76,7 @@ export default function Todo(props: Props) {
     // if (event.keyCode === 229) return
     if (event.key !== 'Enter') return
     if (event.currentTarget.value === '') return
-    const maxId = Math.max(...tasks.map((task) => task.id)) // FIXME
+    const maxId = Math.max(...tasks.map((task) => task.id), 0) // FIXME
     addTask(Task.create(maxId + 1, event.currentTarget.value))
     event.currentTarget.value = ''
   }
