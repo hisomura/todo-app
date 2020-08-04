@@ -28,8 +28,8 @@ function useDragState() {
   return [dragStatus, dragStart, setNextIndex, dragEnd] as const
 }
 
-function useTasks(initialTasks: Task[]) {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks)
+function useTasks(repository: TaskRepository) {
+  const [tasks, setTasks] = useState<Task[]>(repository.getTasks())
 
   const addTask = (task: Task) => {
     setTasks([...tasks, task])
@@ -56,6 +56,15 @@ function useTasks(initialTasks: Task[]) {
     setTasks(moved(tasks, taskIndex, status.nextIndex))
   }
 
+  useEffect(() => {
+    repository.saveTasks(tasks)
+  }, [tasks])
+
+  useEffect(() => {
+    setTasks(repository.getTasks())
+  }, [repository])
+
+
   return [tasks, setTasks, addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] as const
 }
 
@@ -64,12 +73,10 @@ type Props = {
 }
 
 export default function Todo(props: Props) {
-  const [tasks, , addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks(props.repository.getTasks())
+  const [tasks, , addTask, toggleTask, clearTask, moveTask, clearAllClosedTasks] = useTasks(props.repository)
   const [dragStatus, dragStart, setNextIndex, dragEnd] = useDragState()
   const [foldingClosedTasks, toggleFoldingClosedTasks] = useReducer((state: boolean) => !state, true)
   const [modalOpen, setModalOpen] = useState(false)
-
-  useEffect(() => props.repository.saveTasks(tasks))
 
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode

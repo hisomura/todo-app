@@ -1,7 +1,19 @@
+import React from 'react'
 import { cleanup, render, screen } from '@testing-library/react'
-import React from "react";
-import Home from "./index";
-import userEvent from "@testing-library/user-event";
+import userEvent from '@testing-library/user-event'
+import Home from './index'
+import { MockTaskRepository } from '../lib/repository'
+import { Task } from '../lib/task'
+
+jest.mock('../lib/firebase', () => {
+  return {
+    loginWithGithub: () => {
+      const repository = new MockTaskRepository()
+      repository.saveTasks([Task.create(100, 'hello', false)])
+      return ['user-id-1', repository]
+    },
+  }
+})
 
 describe('index.tsx', () => {
   afterEach(cleanup)
@@ -15,5 +27,6 @@ describe('index.tsx', () => {
     render(<Home />)
     userEvent.click(screen.getByText(/Sign in/))
     expect(await screen.findByText(/user-id-1/)).toBeVisible()
+    expect(await screen.findByText(/hello/)).toBeVisible()
   })
 })

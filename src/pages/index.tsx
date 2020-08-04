@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Todo from '../components/Todo'
 import { LocalStorageTaskRepository, TaskRepository } from '../lib/repository'
+import {loginWithGithub, logOut} from '../lib/firebase'
 
 type ApplicationState = {
   userId: string | null
@@ -31,19 +32,25 @@ export default function Home() {
     return <div>now loading...</div>
   }
 
-  const login = () => {
-    updateState({ userId: 'user-id-1' })
+  const toggleLogin = async () => {
+    if (state.userId) {
+      return await logOut()
+    }
+    const [userId, repository] = await loginWithGithub()
+    updateState({ userId, taskRepository: repository })
   }
 
   return (
     <div>
-      {state.userId ? (
-        <div>User: {state.userId}</div>
-      ) : (
-        <button type="button" onClick={login}>
-          Sign in with Google
+      <div>
+        <button type="button" onClick={toggleLogin}>
+          {state.userId ? 'Sign out' : 'Sign in with Github'}
         </button>
-      )}
+        {state.userId ? (
+          <div>User: {state.userId}</div>
+        ) : null}
+      </div>
+
       <Todo repository={state.taskRepository} />
     </div>
   )
