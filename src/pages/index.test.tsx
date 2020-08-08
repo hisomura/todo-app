@@ -2,14 +2,14 @@ import React from 'react'
 import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Home from './index'
-import { MockTaskRepository } from '../lib/repository'
-import { Task } from '../lib/task'
+import { MockTodoRepository } from '../lib/repository'
+import { Todo } from '../lib/todo'
 
 jest.mock('../lib/firebase', () => {
   return {
     loginWithGithub: () => {
-      const repository = new MockTaskRepository()
-      repository.saveTasks([Task.create('hello', false)])
+      const repository = new MockTodoRepository()
+      repository.saveTodos([Todo.create('hello', false)])
       return ['user-id-1', repository]
     },
   }

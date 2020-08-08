@@ -1,8 +1,8 @@
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
-import { Task } from './task'
-import { TaskRepository } from './repository'
+import { Todo } from './todo'
+import { TodoRepository } from './repository'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCS5qI5XKgYS6exw1hwJpPKHfAMNtpECqw',
@@ -39,23 +39,23 @@ export async function loginWithGithub() {
   const userCredential = await app.auth().signInWithPopup(provider)
   console.log(userCredential)
 
-  const repository = new FirestoreTaskRepository(app)
+  const repository = new FirestoreTodoRepository(app)
   repository.load()
 
   return [userCredential.user!.uid, repository] as const
 }
 
-export class FirestoreTaskRepository implements TaskRepository {
-  public tasks: Task[] = []
+export class FirestoreTodoRepository implements TodoRepository {
+  public todos: Todo[] = []
 
   constructor(protected app: firebase.app.App) {}
 
-  saveTasks(tasks: Task[]) {
-    this.tasks = tasks
+  saveTodos(todos: Todo[]) {
+    this.todos = todos
   }
 
-  getTasks() {
-    return this.tasks
+  getTodos() {
+    return this.todos
   }
 
   load() {}

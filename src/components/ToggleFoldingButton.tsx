@@ -10,7 +10,7 @@ type Props = {
 
 export default function ToggleFoldingButton(props: Props) {
   return (
-    <div onClick={props.onClick} data-testid='toggle-folding-closed-tasks-button'>
+    <div onClick={props.onClick} data-testid='toggle-folding-closed-todos-button'>
       <MdExpandLess className={cn({ hidden: props.folding })} />
       <MdExpandMore className={cn({ hidden: !props.folding })} />
     </div>

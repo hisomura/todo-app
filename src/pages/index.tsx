@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import Todo from '../components/Todo'
-import { LocalStorageTaskRepository, TaskRepository } from '../lib/repository'
+import TodoList from '../components/TodoList'
+import { LocalStorageTodoRepository, TodoRepository } from '../lib/repository'
 import {loginWithGithub, logOut} from '../lib/firebase'
 
 type ApplicationState = {
   userId: string | null
-  taskRepository: TaskRepository | null
+  todoRepository: TodoRepository | null
 }
 
 function useApplicationState() {
   const [state, setState] = useState<ApplicationState>({
     userId: null,
-    taskRepository: null,
+    todoRepository: null,
   })
 
   const updateState = (params: Partial<ApplicationState>) => {
@@ -25,10 +25,10 @@ export default function Home() {
   const [state, updateState] = useApplicationState()
 
   useEffect(() => {
-    updateState({ taskRepository: LocalStorageTaskRepository.create() })
+    updateState({ todoRepository: LocalStorageTodoRepository.create() })
   }, [])
 
-  if (!state.taskRepository) {
+  if (!state.todoRepository) {
     return <div>now loading...</div>
   }
 
@@ -37,7 +37,7 @@ export default function Home() {
       return await logOut()
     }
     const [userId, repository] = await loginWithGithub()
-    updateState({ userId, taskRepository: repository })
+    updateState({ userId, todoRepository: repository })
   }
 
   return (
@@ -51,7 +51,7 @@ export default function Home() {
         ) : null}
       </div>
 
-      <Todo repository={state.taskRepository} />
+      <TodoList repository={state.todoRepository} />
     </div>
   )
 }
