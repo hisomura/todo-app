@@ -28,44 +28,72 @@ function useDragState() {
   return [dragStatus, dragStart, setNextIndex, dragEnd] as const
 }
 
+type TodoStatus = {
+  openTodos: Todo[]
+  closedTodos: Todo[]
+  dragTargetIndex: number | null
+}
+
 function useTodos(repository: TodoRepository) {
-  const [todos, setTodos] = useState<Todo[]>(repository.getTodos())
+  const [todoStatus, setTodoStatus] = useState<TodoStatus>({
+    openTodos: repository.getOpenTodos(),
+    closedTodos: repository.getClosedTodos(),
+    dragTargetIndex: null,
+  })
 
   const addTodo = (todo: Todo) => {
-    setTodos([...todos, todo])
+    setTodoStatus({
+      ...todoStatus,
+      openTodos: [...todoStatus.openTodos, todo],
+    })
   }
 
   const toggleTodo = (target: Todo) => {
-    const newTodos = todos.map((todo) => {
-      if (todo.key !== target.key) return todo
-      return { ...todo, closed: !todo.closed }
-    })
-    setTodos(newTodos)
+    const newTarget = { ...target, closed: !target.closed } // required?
+    if (target.closed) {
+      setTodoStatus({
+        ...todoStatus,
+        openTodos: [...todoStatus.openTodos, newTarget],
+        closedTodos: todoStatus.closedTodos.filter((t) => t.key !== target.key),
+      })
+    } else {
+      setTodoStatus({
+        ...todoStatus,
+        openTodos: todoStatus.openTodos.filter((t) => t.key !== target.key),
+        closedTodos: [...todoStatus.closedTodos, newTarget],
+      })
+    }
   }
 
   const clearTodo = (target: Todo) => {
-    setTodos(todos.filter((todo) => todo.key !== target.key))
+    setTodoStatus({ ...todoStatus, closedTodos: todoStatus.closedTodos.filter((t) => t.key !== target.key) })
   }
 
   const clearAllClosedTodos = () => {
-    setTodos(todos.filter((item) => !item.closed))
+    setTodoStatus({ ...todoStatus, closedTodos: [] })
   }
 
   const moveTodo = (status: TodoDragStatus) => {
-    const todoIndex = todos.findIndex((t) => t.key === status.todoKey)
-    setTodos(moved(todos, todoIndex, status.nextIndex))
+    const todoIndex = todoStatus.openTodos.findIndex((t) => t.key === status.todoKey)
+    setTodoStatus({
+      ...todoStatus,
+      openTodos: moved(todoStatus.openTodos, todoIndex, status.nextIndex),
+    })
   }
 
   useEffect(() => {
-    repository.saveTodos(todos)
-  }, [todos])
+    repository.saveTodos([...todoStatus.openTodos, ...todoStatus.closedTodos])
+  }, [todoStatus])
 
   useEffect(() => {
-    setTodos(repository.getTodos())
+    setTodoStatus({
+      openTodos: repository.getOpenTodos(),
+      closedTodos: repository.getClosedTodos(),
+      dragTargetIndex: null,
+    })
   }, [repository])
 
-
-  return [todos, setTodos, addTodo, toggleTodo, clearTodo, moveTodo, clearAllClosedTodos] as const
+  return [todoStatus, setTodoStatus, addTodo, toggleTodo, clearTodo, moveTodo, clearAllClosedTodos] as const
 }
 
 type Props = {
@@ -73,7 +101,7 @@ type Props = {
 }
 
 export default function TodoList(props: Props) {
-  const [todos, , addTodo, toggleTodo, clearTodo, moveTodo, clearAllClosedTodos] = useTodos(props.repository)
+  const [todoStatus, , addTodo, toggleTodo, clearTodo, moveTodo, clearAllClosedTodos] = useTodos(props.repository)
   const [dragStatus, dragStart, setNextIndex, dragEnd] = useDragState()
   const [foldingClosedTodos, toggleFoldingClosedTodos] = useReducer((state: boolean) => !state, true)
   const [modalOpen, setModalOpen] = useState(false)
@@ -108,21 +136,23 @@ export default function TodoList(props: Props) {
               <li className="py-2">
                 + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} type="text" />
               </li>
-              {todos
-                .filter((todo) => !todo.closed)
-                .map((todo, index) => (
-                  <OpenTodoItem
-                    key={todo.key}
-                    todo={todo}
-                    index={index}
-                    toggleTodo={toggleTodo}
-                    isNext={index === dragStatus?.nextIndex}
-                    dragStart={dragStart}
-                    dragEnd={dragEnd}
-                    setNextIndex={setNextIndex}
-                  />
-                ))}
-              <li className={dragStatus?.nextIndex === todos.length ? 'border-t-2 border-blue-500' : 'border-t'} />
+              {todoStatus.openTodos.map((todo, index) => (
+                <OpenTodoItem
+                  key={todo.key}
+                  todo={todo}
+                  index={index}
+                  toggleTodo={toggleTodo}
+                  isNext={index === dragStatus?.nextIndex}
+                  dragStart={dragStart}
+                  dragEnd={dragEnd}
+                  setNextIndex={setNextIndex}
+                />
+              ))}
+              <li
+                className={
+                  dragStatus?.nextIndex === todoStatus.openTodos.length ? 'border-t-2 border-blue-500' : 'border-t'
+                }
+              />
             </ul>
           </div>
 
@@ -131,7 +161,7 @@ export default function TodoList(props: Props) {
               <h2>closed</h2>
               <div
                 className="ml-auto mr-2"
-                hidden={foldingClosedTodos || !todos.some((todo) => todo.closed)}
+                hidden={foldingClosedTodos || todoStatus.closedTodos.length === 0}
                 onClick={() => setModalOpen(true)}
                 data-testid="clear-all-closed-todos"
               >
@@ -140,11 +170,9 @@ export default function TodoList(props: Props) {
               <ToggleFoldingButton folding={foldingClosedTodos} onClick={toggleFoldingClosedTodos} />
             </div>
             <ul className="divide-y" hidden={foldingClosedTodos}>
-              {todos
-                .filter((todo) => todo.closed)
-                .map((todo) => (
-                  <ClosedTodoItem key={todo.key} todo={todo} toggleTodo={toggleTodo} clearTodo={clearTodo} />
-                ))}
+              {todoStatus.closedTodos.map((todo) => (
+                <ClosedTodoItem key={todo.key} todo={todo} toggleTodo={toggleTodo} clearTodo={clearTodo} />
+              ))}
             </ul>
           </div>
         </div>

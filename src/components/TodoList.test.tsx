@@ -5,7 +5,7 @@ import TodoList from './TodoList'
 import { Todo } from '../lib/todo'
 import { MockTodoRepository } from '../lib/repository'
 
-describe('Todo.test.tsx', () => {
+describe('TodoList.test.tsx', () => {
   afterEach(cleanup)
 
   test('Add and close a todo. Then expand closed todo list. Then Reopen a todo.', async () => {
