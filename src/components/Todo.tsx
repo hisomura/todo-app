@@ -13,8 +13,8 @@ const preventDefault: DragEventHandler = (event) => event.preventDefault()
 function useDragState() {
   const [dragStatus, setDragStatus] = useState<TaskDragStatus | null>(null)
 
-  const dragStart = (taskId: TaskDragStatus['taskId']) => {
-    setDragStatus({ taskId, nextIndex: taskId })
+  const dragStart = (taskKey: TaskDragStatus['taskKey'], index: number) => {
+    setDragStatus({ taskKey, nextIndex: index })
   }
 
   const setNextIndex = (nextIndex: TaskDragStatus['nextIndex']) => {
@@ -37,14 +37,14 @@ function useTasks(repository: TaskRepository) {
 
   const toggleTask = (target: Task) => {
     const newTasks = tasks.map((task) => {
-      if (task.id !== target.id) return task
+      if (task.key !== target.key) return task
       return { ...task, closed: !task.closed }
     })
     setTasks(newTasks)
   }
 
   const clearTask = (target: Task) => {
-    setTasks(tasks.filter((task) => task.id !== target.id))
+    setTasks(tasks.filter((task) => task.key !== target.key))
   }
 
   const clearAllClosedTasks = () => {
@@ -52,7 +52,7 @@ function useTasks(repository: TaskRepository) {
   }
 
   const moveTask = (status: TaskDragStatus) => {
-    const taskIndex = tasks.findIndex((t) => t.id === status.taskId)
+    const taskIndex = tasks.findIndex((t) => t.key === status.taskKey)
     setTasks(moved(tasks, taskIndex, status.nextIndex))
   }
 
@@ -83,8 +83,7 @@ export default function Todo(props: Props) {
     // if (event.keyCode === 229) return
     if (event.key !== 'Enter') return
     if (event.currentTarget.value === '') return
-    const maxId = Math.max(...tasks.map((task) => task.id), 0) // FIXME
-    addTask(Task.create(maxId + 1, event.currentTarget.value))
+    addTask(Task.create(event.currentTarget.value))
     event.currentTarget.value = ''
   }
 
@@ -113,7 +112,7 @@ export default function Todo(props: Props) {
                 .filter((task) => !task.closed)
                 .map((task, index) => (
                   <OpenTaskItem
-                    key={task.id}
+                    key={task.key}
                     task={task}
                     index={index}
                     toggleTask={toggleTask}
@@ -144,7 +143,7 @@ export default function Todo(props: Props) {
               {tasks
                 .filter((task) => task.closed)
                 .map((task) => (
-                  <ClosedTaskItem key={task.id} task={task} toggleTask={toggleTask} clearTask={clearTask} />
+                  <ClosedTaskItem key={task.key} task={task} toggleTask={toggleTask} clearTask={clearTask} />
                 ))}
             </ul>
           </div>

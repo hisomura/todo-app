@@ -1,14 +1,17 @@
+import { v4 as uuidV4 } from 'uuid';
+
 export type Task = {
-  id: number
+  key: string
   name: string
   closed: boolean
 }
 
 export const Task = {
-  create: (id: number, name: string, closed = false): Task => ({ id, name, closed }),
+  create: (name: string, closed = false): Task => ({ key: uuidV4(), name, closed }),
+  convert: (key: string, name: string, closed: boolean): Task => ({ key, name, closed }),
 }
 
 export type TaskDragStatus = {
-  taskId: Task['id']
+  taskKey: Task['key']
   nextIndex: number
 }

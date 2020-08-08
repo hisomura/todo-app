@@ -39,9 +39,9 @@ describe('Todo.test.tsx', () => {
   test('Clear all closed tasks.', async () => {
     const repository = new MockTaskRepository()
     repository.saveTasks([
-      Task.create(1, 'Wash dishes', true),
-      Task.create(2, 'Clean my room', true),
-      Task.create(3, 'Measure my body weight', true),
+      Task.create('Wash dishes', true),
+      Task.create('Clean my room', true),
+      Task.create('Measure my body weight', true),
     ])
 
     render(<Todo repository={repository} />)

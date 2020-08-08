@@ -3,7 +3,7 @@ import { MdClose } from 'react-icons/md'
 import { Task } from '../lib/task'
 
 type Props = {
-  key: number
+  key: string
   task: Task
   toggleTask: (task: Task) => void
   clearTask: (task: Task) => void
@@ -11,7 +11,7 @@ type Props = {
 
 export default function ClosedTaskItem(props: Props) {
   return (
-    <li key={props.task.id} className="flex py-2" data-testid="closed-task-item">
+    <li key={props.task.key} className="flex py-2" data-testid="closed-task-item">
       <input
         className="my-auto mr-2"
         type="checkbox"

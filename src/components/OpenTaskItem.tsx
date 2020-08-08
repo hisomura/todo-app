@@ -2,11 +2,11 @@ import React from 'react'
 import { Task } from '../lib/task'
 
 type Props = {
-  key: number
+  key: string
   task: Task
   index: number
   toggleTask: (task: Task) => void
-  dragStart: (taskId: number) => void
+  dragStart: (taskKey: string, index: number) => void
   setNextIndex: (nextIndex: number) => void
   dragEnd: () => void
   isNext: boolean
@@ -17,10 +17,10 @@ export default function OpenTaskItem(props: Props) {
   return (
     <li
       draggable={true}
-      key={props.task.id}
+      key={props.task.key}
       className={className}
       data-testid="open-task-item"
-      onDragStart={() => props.dragStart(props.task.id)}
+      onDragStart={() => props.dragStart(props.task.key, props.index)}
       onDragOver={(e) => {
         e.preventDefault()
         const rect = (e.target as HTMLLIElement).getBoundingClientRect()

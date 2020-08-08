@@ -9,7 +9,7 @@ jest.mock('../lib/firebase', () => {
   return {
     loginWithGithub: () => {
       const repository = new MockTaskRepository()
-      repository.saveTasks([Task.create(100, 'hello', false)])
+      repository.saveTasks([Task.create('hello', false)])
       return ['user-id-1', repository]
     },
   }
