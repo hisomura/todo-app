@@ -10,17 +10,21 @@ import { TodoRepository } from '../lib/repository'
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault()
 
+function inRect(rect: DOMRect, clientX: number, clientY: number) {
+  return  rect.left <= clientX && clientX <= rect.right && rect.top <= clientY && clientY <= rect.bottom
+}
+
 type TodoStatus = {
   openTodos: Todo[]
   closedTodos: Todo[]
-  dragTargetIndex: number | null
+  dropTargetIndex: number | null
 }
 
 function useTodos(repository: TodoRepository) {
   const [todoStatus, setTodoStatus] = useState<TodoStatus>({
     openTodos: repository.getOpenTodos(),
     closedTodos: repository.getClosedTodos(),
-    dragTargetIndex: null,
+    dropTargetIndex: null,
   })
 
   const addTodo = (todo: Todo) => {
@@ -57,17 +61,17 @@ function useTodos(repository: TodoRepository) {
 
   const moveTodo = (todoKey: string) => {
     const todoIndex = todoStatus.openTodos.findIndex((t) => t.key === todoKey)
-    if (todoStatus.dragTargetIndex === null) throw new Error('DragTargetIndex is empty.')
+    if (todoStatus.dropTargetIndex === null) throw new Error('DropTargetIndex is empty.')
     setTodoStatus({
       ...todoStatus,
-      openTodos: moved(todoStatus.openTodos, todoIndex, todoStatus.dragTargetIndex),
-      dragTargetIndex: null,
+      openTodos: moved(todoStatus.openTodos, todoIndex, todoStatus.dropTargetIndex),
+      dropTargetIndex: null,
     })
   }
 
-  const setDragTargetIndex = (nextIndex: number | null) => {
-    if (todoStatus.dragTargetIndex === nextIndex) return
-    setTodoStatus({ ...todoStatus, dragTargetIndex: nextIndex })
+  const setDropTargetIndex = (nextIndex: number | null) => {
+    if (todoStatus.dropTargetIndex === nextIndex) return
+    setTodoStatus({ ...todoStatus, dropTargetIndex: nextIndex })
   }
 
   useEffect(() => {
@@ -78,7 +82,7 @@ function useTodos(repository: TodoRepository) {
     setTodoStatus({
       openTodos: repository.getOpenTodos(),
       closedTodos: repository.getClosedTodos(),
-      dragTargetIndex: null,
+      dropTargetIndex: null,
     })
   }, [repository])
 
@@ -88,7 +92,7 @@ function useTodos(repository: TodoRepository) {
     addTodo,
     toggleTodo,
     clearTodo,
-    setDragTargetIndex,
+    setDropTargetIndex,
     moveTodo,
     clearAllClosedTodos,
   ] as const
@@ -99,7 +103,7 @@ type Props = {
 }
 
 export default function TodoList(props: Props) {
-  const [todoStatus, , addTodo, toggleTodo, clearTodo, setDragTargetIndex, moveTodo, clearAllClosedTodos] = useTodos(
+  const [todoStatus, , addTodo, toggleTodo, clearTodo, setDropTargetIndex, moveTodo, clearAllClosedTodos] = useTodos(
     props.repository
   )
   const [foldingClosedTodos, toggleFoldingClosedTodos] = useReducer((state: boolean) => !state, true)
@@ -118,12 +122,17 @@ export default function TodoList(props: Props) {
     <>
       <div className="max-w-xl mx-auto py-8 z-0">
         <div className="shadow-xl rounded px-4 pb-4">
-          <div className="py-4">
+          <div className="pt-4">
             <h1>Todo</h1>
           </div>
           <div
             data-testid="open-todo-area"
             onDragOver={preventDefault}
+            onDragLeave={(e) => {
+              const rect = (e.target as HTMLDivElement).getBoundingClientRect()
+              if (inRect(rect, e.clientX, e.clientY)) return
+              setDropTargetIndex(null)
+            }}
             onDrop={(e) => {
               e.stopPropagation()
               e.preventDefault()
@@ -141,16 +150,13 @@ export default function TodoList(props: Props) {
                   todo={todo}
                   index={index}
                   toggleTodo={toggleTodo}
-                  isNext={index === todoStatus.dragTargetIndex}
-                  setNextIndex={setDragTargetIndex}
-                  dragEndHandler={() => {
-                    // TODO implement
-                  }}
+                  isNext={index === todoStatus.dropTargetIndex}
+                  setNextIndex={setDropTargetIndex}
                 />
               ))}
               <li
                 className={
-                  todoStatus.dragTargetIndex === todoStatus.openTodos.length ? 'border-t-2 border-blue-500' : 'border-t'
+                  todoStatus.dropTargetIndex === todoStatus.openTodos.length ? 'border-t-2 border-blue-500' : 'border-t'
                 }
               />
             </ul>

@@ -7,7 +7,6 @@ type Props = {
   index: number
   toggleTodo: (todo: Todo) => void
   setNextIndex: (nextIndex: number) => void
-  dragEndHandler: () => void
   isNext: boolean
 }
 
@@ -31,7 +30,6 @@ export default function OpenTodoItem(props: Props) {
         const isUpper = middleHeight > e.clientY
         props.setNextIndex(isUpper ? props.index : props.index + 1)
       }}
-      onDragEnd={props.dragEndHandler}
     >
       <input className="my-auto mr-2" type="checkbox" onClick={() => props.toggleTodo(props.todo)} />
       <p>{props.todo.name}</p>
