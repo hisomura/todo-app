@@ -39,24 +39,83 @@ export async function loginWithGithub() {
   const userCredential = await app.auth().signInWithPopup(provider)
   console.log(userCredential)
 
-  const repository = new FirestoreTodoRepository(app)
-  repository.load()
+  const repository = new DatabaseTodoRepository(app)
+  await repository.init()
 
   return [userCredential.user!.uid, repository] as const
 }
 
-export class FirestoreTodoRepository implements TodoRepository {
-  public todos: Todo[] = []
+export class DatabaseTodoRepository implements TodoRepository {
+  protected todos: Todo[] = []
+  protected uploaded: boolean = true
+  protected intervalId: number | null = null
 
   constructor(protected app: firebase.app.App) {}
 
+  async init() {
+    const userId = this.app.auth().currentUser!.uid
+    const snapshot = await firebase.database().ref(`users/${userId}/todos`).once('value')
+    this.todos = convertDatabaseTodos(snapshot.val())
+
+    this.intervalId = window.setInterval(async () => {
+      if (this.uploaded) return
+
+      const databaseTodos = convertTodosForDatabase(this.todos)
+      await firebase.database().ref(`users/${userId}/todos`).set(databaseTodos)
+      this.uploaded = true
+      console.log('uploaded')
+    }, 5000)
+  }
+
+  close() {
+    window.clearInterval(this.intervalId!)
+  }
+
   saveTodos(todos: Todo[]) {
     this.todos = todos
+    this.uploaded = false
   }
 
   getTodos() {
     return this.todos
   }
 
-  load() {}
+  getOpenTodos(): Todo[] {
+    return this.todos.filter((t) => !t.closed)
+  }
+
+  getClosedTodos(): Todo[] {
+    return this.todos.filter((t) => t.closed)
+  }
+}
+
+export const firebaseTest = async () => {
+  const app = getApp()
+  const userId = app.auth().currentUser!.uid
+  firebase
+    .database()
+    .ref(`users/${userId}/todos`)
+    .once('value')
+    .then(function (snapshot) {
+      console.log(snapshot)
+      console.log(snapshot.val())
+      console.log(snapshot.toJSON())
+    })
+}
+
+type DatabaseTodo = Omit<Todo, 'key'>
+type DatabaseTodos = { [key: string]: DatabaseTodo }
+
+export function convertTodosForDatabase(todos: Todo[]) {
+  return todos.reduce<DatabaseTodos>((acc, { key, ...rest }) => {
+    acc[key] = rest
+    return acc
+  }, {})
+}
+
+export function convertDatabaseTodos(databaseTodos: DatabaseTodos) {
+  return Object.keys(databaseTodos).map((key) => ({
+    ...databaseTodos[key],
+    key,
+  }))
 }

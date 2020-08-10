@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import TodoList from '../components/TodoList'
 import { LocalStorageTodoRepository, TodoRepository } from '../lib/repository'
-import {loginWithGithub, logOut} from '../lib/firebase'
+import { DatabaseTodoRepository, loginWithGithub, logOut } from '../lib/firebase'
 
 type ApplicationState = {
   userId: string | null
@@ -34,10 +34,22 @@ export default function Home() {
 
   const toggleLogin = async () => {
     if (state.userId) {
-      return await logOut()
+      //FIXME
+      if (state.todoRepository && 'close' in state.todoRepository) {
+        ;(state.todoRepository as DatabaseTodoRepository).close()
+      }
+      updateState({ userId: null, todoRepository: new LocalStorageTodoRepository() })
+      await logOut()
+    } else {
+      const [userId, repository] = await loginWithGithub()
+      //FIXME
+      if (state.todoRepository) {
+        const todos = state.todoRepository.getTodos()
+        repository.saveTodos([...repository.getTodos(), ...todos])
+        state.todoRepository.saveTodos([])
+      }
+      updateState({ userId, todoRepository: repository })
     }
-    const [userId, repository] = await loginWithGithub()
-    updateState({ userId, todoRepository: repository })
   }
 
   return (
@@ -46,9 +58,7 @@ export default function Home() {
         <button type="button" onClick={toggleLogin}>
           {state.userId ? 'Sign out' : 'Sign in with Github'}
         </button>
-        {state.userId ? (
-          <div>User: {state.userId}</div>
-        ) : null}
+        {state.userId ? <div>User: {state.userId}</div> : null}
       </div>
 
       <TodoList repository={state.todoRepository} />
