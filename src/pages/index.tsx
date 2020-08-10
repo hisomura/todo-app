@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import TodoList from '../components/TodoList'
 import { LocalStorageTodoRepository, TodoRepository } from '../lib/repository'
-import { DatabaseTodoRepository, loginWithGithub, logOut } from '../lib/firebase'
+import { loginWithGithub, logOut } from '../lib/firebase'
 
 type ApplicationState = {
   userId: string | null
@@ -34,10 +34,7 @@ export default function Home() {
 
   const toggleLogin = async () => {
     if (state.userId) {
-      //FIXME
-      if (state.todoRepository && 'close' in state.todoRepository) {
-        ;(state.todoRepository as DatabaseTodoRepository).close()
-      }
+      state.todoRepository?.close()
       updateState({ userId: null, todoRepository: new LocalStorageTodoRepository() })
       await logOut()
     } else {

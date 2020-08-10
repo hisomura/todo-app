@@ -8,6 +8,8 @@ export interface TodoRepository {
   getOpenTodos(): Todo[]
 
   getClosedTodos(): Todo[]
+
+  close(): void
 }
 
 export class LocalStorageTodoRepository implements TodoRepository {
@@ -40,6 +42,8 @@ export class LocalStorageTodoRepository implements TodoRepository {
     const serialized = window?.localStorage?.getItem('todos')
     this.todos = serialized ? JSON.parse(serialized) : []
   }
+
+  close() {}
 }
 
 export class MockTodoRepository implements TodoRepository {
@@ -60,4 +64,6 @@ export class MockTodoRepository implements TodoRepository {
   getClosedTodos(): Todo[] {
     return this.todos.filter((t) => t.closed)
   }
+
+  close() {}
 }
