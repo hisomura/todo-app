@@ -1,36 +1,69 @@
-import { Task } from './task'
+import { Todo } from './todo'
 
-export interface TaskRepository {
-  saveTasks(tasks: Task[]): void
-  getTasks(): Task[]
+export interface TodoRepository {
+  saveTodos(todos: Todo[]): void
+
+  getTodos(): Todo[]
+
+  getOpenTodos(): Todo[]
+
+  getClosedTodos(): Todo[]
+
+  close(): void
 }
 
-export class LocalStorageTaskRepository implements TaskRepository {
-  protected tasks: Task[] = []
+export class LocalStorageTodoRepository implements TodoRepository {
+  protected todos: Todo[] = []
+
   static create() {
-    const repository = new LocalStorageTaskRepository()
-    repository.load()
+    const repository = new LocalStorageTodoRepository()
+    repository.init()
     return repository
   }
-  saveTasks(tasks: Task[]) {
-    this.tasks = tasks
-    window.localStorage.setItem('tasks', JSON.stringify(this.tasks))
+
+  saveTodos(todos: Todo[]) {
+    this.todos = todos
+    window.localStorage.setItem('todos', JSON.stringify(this.todos))
   }
-  getTasks() {
-    return this.tasks
+
+  getTodos() {
+    return this.todos
   }
-  load() {
-    const serialized = window?.localStorage?.getItem('tasks')
-    this.tasks = serialized ? JSON.parse(serialized) : []
+
+  getOpenTodos(): Todo[] {
+    return this.todos.filter((t) => !t.closed)
   }
+
+  getClosedTodos(): Todo[] {
+    return this.todos.filter((t) => t.closed)
+  }
+
+  init() {
+    const serialized = window?.localStorage?.getItem('todos')
+    this.todos = serialized ? JSON.parse(serialized) : []
+  }
+
+  close() {}
 }
 
-export class MockTaskRepository implements TaskRepository {
-  protected tasks: Task[] = []
-  saveTasks(tasks: Task[]) {
-    this.tasks = tasks
+export class MockTodoRepository implements TodoRepository {
+  protected todos: Todo[] = []
+
+  saveTodos(todos: Todo[]) {
+    this.todos = todos
   }
-  getTasks() {
-    return this.tasks
+
+  getTodos() {
+    return this.todos
   }
+
+  getOpenTodos(): Todo[] {
+    return this.todos.filter((t) => !t.closed)
+  }
+
+  getClosedTodos(): Todo[] {
+    return this.todos.filter((t) => t.closed)
+  }
+
+  close() {}
 }

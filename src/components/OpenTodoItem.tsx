@@ -1,26 +1,28 @@
-import React from 'react'
-import { Task } from '../lib/task'
+import React, { DragEventHandler } from 'react'
+import { Todo } from '../lib/todo'
 
 type Props = {
-  key: number
-  task: Task
+  key: string
+  todo: Todo
   index: number
-  toggleTask: (task: Task) => void
-  dragStart: (taskId: number) => void
+  toggleTodo: (todo: Todo) => void
   setNextIndex: (nextIndex: number) => void
-  dragEnd: () => void
   isNext: boolean
 }
 
-export default function OpenTaskItem(props: Props) {
+export default function OpenTodoItem(props: Props) {
   const className = 'flex py-2 ' + (props.isNext ? 'border-t-2 border-blue-500' : 'border-t')
+  const onDragStart: DragEventHandler = (e) => {
+    e.dataTransfer!.setData('todo-key', props.todo.key)
+    e.dataTransfer!.effectAllowed = 'move'
+  }
   return (
     <li
       draggable={true}
-      key={props.task.id}
+      key={props.todo.key}
       className={className}
-      data-testid="open-task-item"
-      onDragStart={() => props.dragStart(props.task.id)}
+      data-testid="open-todo-item"
+      onDragStart={onDragStart}
       onDragOver={(e) => {
         e.preventDefault()
         const rect = (e.target as HTMLLIElement).getBoundingClientRect()
@@ -28,10 +30,9 @@ export default function OpenTaskItem(props: Props) {
         const isUpper = middleHeight > e.clientY
         props.setNextIndex(isUpper ? props.index : props.index + 1)
       }}
-      onDragEnd={props.dragEnd}
     >
-      <input className="my-auto mr-2" type="checkbox" onClick={() => props.toggleTask(props.task)} />
-      <p>{props.task.name}</p>
+      <input className="my-auto mr-2" type="checkbox" onClick={() => props.toggleTodo(props.todo)} />
+      <p>{props.todo.name}</p>
     </li>
   )
 }
