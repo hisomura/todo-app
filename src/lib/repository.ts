@@ -17,7 +17,7 @@ export class LocalStorageTodoRepository implements TodoRepository {
 
   static create() {
     const repository = new LocalStorageTodoRepository()
-    repository.load()
+    repository.init()
     return repository
   }
 
@@ -38,7 +38,7 @@ export class LocalStorageTodoRepository implements TodoRepository {
     return this.todos.filter((t) => t.closed)
   }
 
-  load() {
+  init() {
     const serialized = window?.localStorage?.getItem('todos')
     this.todos = serialized ? JSON.parse(serialized) : []
   }

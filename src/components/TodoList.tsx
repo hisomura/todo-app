@@ -120,7 +120,7 @@ export default function TodoList(props: Props) {
 
   return (
     <>
-      <div className="max-w-xl mx-auto py-8 z-0">
+      <div className="max-w-xl mx-auto pt-2 z-0">
         <div className="shadow-xl rounded px-4 pb-4">
           <div className="pt-4">
             <h1>Todo</h1>

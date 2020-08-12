@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import TodoList from '../components/TodoList'
 import { LocalStorageTodoRepository, TodoRepository } from '../lib/repository'
 import { loginWithGithub, logOut } from '../lib/firebase'
+import LoginButton from '../components/LoginButton'
 
 type ApplicationState = {
   userId: string | null
@@ -32,30 +33,32 @@ export default function Home() {
     return <div>now loading...</div>
   }
 
-  const toggleLogin = async () => {
-    if (state.userId) {
-      state.todoRepository?.close()
-      updateState({ userId: null, todoRepository: new LocalStorageTodoRepository() })
-      await logOut()
-    } else {
-      const [userId, repository] = await loginWithGithub()
-      //FIXME
-      if (state.todoRepository) {
-        const todos = state.todoRepository.getTodos()
-        repository.saveTodos([...repository.getTodos(), ...todos])
-        state.todoRepository.saveTodos([])
-      }
-      updateState({ userId, todoRepository: repository })
+  const login = async () => {
+    const [userId, repository] = await loginWithGithub()
+    if (state.todoRepository) {
+      const todos = state.todoRepository.getTodos()
+      repository.saveTodos([...repository.getTodos(), ...todos])
+      state.todoRepository.saveTodos([])
     }
+    updateState({ userId, todoRepository: repository })
+  }
+
+  const logout = async () => {
+    state.todoRepository?.close()
+    const repository = new LocalStorageTodoRepository()
+    repository.init()
+    updateState({ userId: null, todoRepository: repository })
+    await logOut()
   }
 
   return (
     <div>
-      <div>
-        <button type="button" onClick={toggleLogin}>
-          {state.userId ? 'Sign out' : 'Sign in with Github'}
-        </button>
-        {state.userId ? <div>User: {state.userId}</div> : null}
+      <div className="max-w-xl mx-auto pt-8 z-0 flex justify-end">
+        {state.userId ? (
+          <LoginButton onclick={logout} message="Logout" />
+        ) : (
+          <LoginButton onclick={login} message="Login with Github" />
+        )}
       </div>
 
       <TodoList repository={state.todoRepository} />
