@@ -30,7 +30,7 @@ function useTodos(repository: TodoRepository) {
   const addTodo = (todo: Todo) => {
     setTodoStatus({
       ...todoStatus,
-      openTodos: [...todoStatus.openTodos, todo],
+      openTodos: [todo, ...todoStatus.openTodos],
     })
   }
 
