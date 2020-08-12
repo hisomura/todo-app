@@ -145,7 +145,7 @@ export default function TodoList(props: Props) {
                 <label htmlFor="new-todo" hidden={true}>
                   Input new todo.
                 </label>
-                + <input id="new-todo" className="focus:outline-none ml-1" onKeyDown={onKeyDown} type="text" />
+                + <input id="new-todo" className="focus:outline-none ml-1 w-11/12" onKeyDown={onKeyDown} type="text" />
               </li>
               {todoStatus.openTodos.map((todo, index) => (
                 <OpenTodoItem
