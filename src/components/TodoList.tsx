@@ -11,7 +11,7 @@ import { TodoRepository } from '../lib/repository'
 const preventDefault: DragEventHandler = (event) => event.preventDefault()
 
 function inRect(rect: DOMRect, clientX: number, clientY: number) {
-  return  rect.left <= clientX && clientX <= rect.right && rect.top <= clientY && clientY <= rect.bottom
+  return rect.left <= clientX && clientX <= rect.right && rect.top <= clientY && clientY <= rect.bottom
 }
 
 type TodoStatus = {
@@ -142,7 +142,10 @@ export default function TodoList(props: Props) {
           >
             <ul>
               <li className="py-2">
-                + <input className="focus:outline-none ml-1" onKeyDown={onKeyDown} type="text" />
+                <label htmlFor="new-todo" hidden={true}>
+                  Input new todo.
+                </label>
+                + <input id="new-todo" className="focus:outline-none ml-1" onKeyDown={onKeyDown} type="text" />
               </li>
               {todoStatus.openTodos.map((todo, index) => (
                 <OpenTodoItem
