@@ -1,13 +1,13 @@
-import React from 'react'
-import { MdClose } from 'react-icons/md'
-import { Todo } from '../lib/todo'
+import React from "react";
+import { MdClose } from "react-icons/md";
+import { Todo } from "../lib/todo";
 
 type Props = {
-  key: string
-  todo: Todo
-  toggleTodo: (todo: Todo) => void
-  clearTodo: (todo: Todo) => void
-}
+  key: string;
+  todo: Todo;
+  toggleTodo: (todo: Todo) => void;
+  clearTodo: (todo: Todo) => void;
+};
 
 export default function ClosedTodoItem(props: Props) {
   return (
@@ -23,5 +23,5 @@ export default function ClosedTodoItem(props: Props) {
         <MdClose />
       </div>
     </li>
-  )
+  );
 }

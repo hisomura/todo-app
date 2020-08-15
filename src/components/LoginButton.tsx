@@ -1,10 +1,10 @@
-import React from 'react'
-import { AiFillGithub } from 'react-icons/ai'
+import React from "react";
+import { AiFillGithub } from "react-icons/ai";
 
 type Props = {
-  onclick: () => void
-  message: string
-}
+  onclick: () => void;
+  message: string;
+};
 
 export default function LoginButton(props: Props) {
   return (
@@ -12,5 +12,5 @@ export default function LoginButton(props: Props) {
       <AiFillGithub size={24} className="mr-2" />
       <span>{props.message}</span>
     </button>
-  )
+  );
 }
