@@ -18,12 +18,12 @@ jest.mock("../lib/firebase", () => {
 describe("index.tsx", () => {
   afterEach(cleanup);
 
-  test("shows title.", async () => {
+  test("shows the title", async () => {
     render(<Home />);
     expect(screen.getByText(/Todo/)).toBeVisible();
   });
 
-  test("shows a user ID when a user click login button.", async () => {
+  test("shows a user ID when a user click login button", async () => {
     render(<Home />);
     userEvent.click(screen.getByText(/Login/));
     // expect(await screen.findByText(/user-id-1/)).toBeVisible()

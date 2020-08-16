@@ -2,7 +2,7 @@ import { Todo } from "./todo";
 import { convertDatabaseTodos, convertTodosForDatabase } from "./firebase";
 
 describe("convertTodosForDatabase", () => {
-  test("convert Todos to DatabaseTodos", () => {
+  test("converts Todos to DatabaseTodos", () => {
     const todos: Todo[] = [
       { key: "key1", name: "hello", closed: false },
       { key: "key2", name: "hello, world", closed: true },
@@ -18,14 +18,14 @@ describe("convertTodosForDatabase", () => {
     });
   });
 
-  test("convert [] to {}", () => {
+  test("converts [] to {}", () => {
     const databaseTodos = convertTodosForDatabase([]);
     expect(databaseTodos).toEqual({});
   });
 });
 
 describe("convertDatabaseTodosToTodos", () => {
-  test("convert DatabaseTodos to Todos", () => {
+  test("converts DatabaseTodos to Todos", () => {
     const databaseTodos = {
       key1: { name: "hello", closed: false },
       key2: { name: "hello, world", closed: true },
@@ -40,7 +40,7 @@ describe("convertDatabaseTodosToTodos", () => {
     ]);
   });
 
-  test("convert {} to []", () => {
+  test("converts {} to []", () => {
     const firebaseTodos = convertDatabaseTodos({});
     expect(firebaseTodos).toEqual([]);
   });

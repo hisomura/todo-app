@@ -5,10 +5,10 @@ import TodoList from "./TodoList";
 import { Todo } from "../lib/todo";
 import { MockTodoRepository } from "../lib/repository";
 
-describe("TodoList.test.tsx", () => {
+describe("TodoList.tsx", () => {
   afterEach(cleanup);
 
-  test("Add and close a todo. Then expand closed todo list. Then Reopen a todo.", async () => {
+  test("adds and closes a todo, then expands closed todo list, then reopens a todo", async () => {
     render(<TodoList repository={new MockTodoRepository()} />);
 
     // Add a todo
@@ -36,7 +36,7 @@ describe("TodoList.test.tsx", () => {
     expect(screen.queryByTestId("closed-todo-item")).not.toBeInTheDocument();
   });
 
-  test("Clear all closed todos.", async () => {
+  test("clears all closed todos", async () => {
     const repository = new MockTodoRepository();
     repository.saveTodos([
       Todo.create("Wash dishes", true),

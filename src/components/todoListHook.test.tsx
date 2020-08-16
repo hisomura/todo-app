@@ -5,7 +5,7 @@ import { Todo } from "../lib/todo";
 
 
 describe("todoListHook", () => {
-  test("adds a todo.", () => {
+  test("adds a todo", () => {
     const repository = new MockTodoRepository();
     repository.saveTodos([]);
     const { result } = renderHook(() => useTodoList(repository));
@@ -17,7 +17,7 @@ describe("todoListHook", () => {
     expect(result.current.closedTodos).toEqual([]);
   });
 
-  test("close a todo.", () => {
+  test("closes a todo", () => {
     const repository = new MockTodoRepository();
     const todo = Todo.create("test");
     repository.saveTodos([todo]);
@@ -28,7 +28,7 @@ describe("todoListHook", () => {
     expect(result.current.closedTodos).toEqual([todo]);
   });
 
-  test("reopen a todo.", () => {
+  test("reopens a todo", () => {
     const repository = new MockTodoRepository();
     const todo = Todo.create("test", true);
     repository.saveTodos([todo]);
@@ -50,7 +50,7 @@ describe("todoListHook", () => {
     return { repository, todo1, todo2, todo3, todo4 };
   }
 
-  test("clear a todo.", () => {
+  test("clears a todo", () => {
     const { repository, todo1, todo2, todo3, todo4 } = createMockTodoRepository();
     const { result } = renderHook(() => useTodoList(repository));
 
@@ -59,7 +59,7 @@ describe("todoListHook", () => {
     expect(result.current.closedTodos).toEqual([todo2, todo4]);
   });
 
-  test("clear all todos.", () => {
+  test("clears all todos", () => {
     const { repository, todo1 } = createMockTodoRepository();
     const { result } = renderHook(() => useTodoList(repository));
 
@@ -68,7 +68,7 @@ describe("todoListHook", () => {
     expect(result.current.closedTodos).toEqual([]);
   });
 
-  test("move a todo.", () => {
+  test("moves a todo", () => {
     const repository = new MockTodoRepository();
     const todo1 = Todo.create("test1", false);
     const todo2 = Todo.create("test2", false);
