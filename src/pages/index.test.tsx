@@ -20,7 +20,7 @@ describe("index.tsx", () => {
 
   test("shows the title", async () => {
     render(<Home />);
-    expect(screen.getByText(/Todo/)).toBeVisible();
+    expect(screen.getByText(/TodoList1/)).toBeVisible();
   });
 
   test("shows a user ID when a user click login button", async () => {

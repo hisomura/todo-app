@@ -60,7 +60,16 @@ export default function Home() {
           <LoginButton onclick={login} message="Login with Github" />
         )}
       </div>
-      <TodoList repository={state.todoRepository} />
+      <div className="flex">
+        <TodoList repository={state.todoRepository} />
+        <div className="mx-6 pt-2 z-0">
+          <div className="w-80 shadow-xl rounded px-4 pb-4">
+            <div className="pt-4">
+              <h1 className="cursor-pointer ">+ New Todo List</h1>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

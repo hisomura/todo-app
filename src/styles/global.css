@@ -5,6 +5,6 @@
 /*noinspection CssInvalidAtRule*/
 @tailwind utilities;
 
-html,
-body {
+.w-96 {
+    width: 24em;
 }
