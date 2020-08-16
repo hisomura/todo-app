@@ -1,12 +1,11 @@
-import React, { DragEventHandler, KeyboardEventHandler, useEffect, useReducer, useState } from "react";
+import React, { DragEventHandler, KeyboardEventHandler, useReducer, useState } from "react";
 import { MdClearAll } from "react-icons/md";
 import { Todo } from "../lib/todo";
-import { moved } from "../lib/array";
 import ToggleFoldingButton from "./ToggleFoldingButton";
 import OpenTodoItem from "./OpenTodoItem";
 import ClosedTodoItem from "./ClosedTodoItem";
 import ClearAllModal from "./ClearAllModal";
-import { TodoRepository } from "../lib/repository";
+import { useTodoListFromContext } from "./todoListHook";
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault();
 
@@ -14,98 +13,20 @@ function inRect(rect: DOMRect, clientX: number, clientY: number) {
   return rect.left <= clientX && clientX <= rect.right && rect.top <= clientY && clientY <= rect.bottom;
 }
 
-type TodoStatus = {
-  openTodos: Todo[];
-  closedTodos: Todo[];
-  dropTargetIndex: number | null;
-};
-
-function useTodos(repository: TodoRepository) {
-  const [todoStatus, setTodoStatus] = useState<TodoStatus>({
-    openTodos: repository.getOpenTodos(),
-    closedTodos: repository.getClosedTodos(),
-    dropTargetIndex: null,
-  });
-
-  const addTodo = (todo: Todo) => {
-    setTodoStatus({
-      ...todoStatus,
-      openTodos: [todo, ...todoStatus.openTodos],
-    });
-  };
-
-  const toggleTodo = (target: Todo) => {
-    const newTarget = { ...target, closed: !target.closed }; // required?
-    if (target.closed) {
-      setTodoStatus({
-        ...todoStatus,
-        openTodos: [...todoStatus.openTodos, newTarget],
-        closedTodos: todoStatus.closedTodos.filter((t) => t.key !== target.key),
-      });
-    } else {
-      setTodoStatus({
-        ...todoStatus,
-        openTodos: todoStatus.openTodos.filter((t) => t.key !== target.key),
-        closedTodos: [...todoStatus.closedTodos, newTarget],
-      });
-    }
-  };
-
-  const clearTodo = (target: Todo) => {
-    setTodoStatus({ ...todoStatus, closedTodos: todoStatus.closedTodos.filter((t) => t.key !== target.key) });
-  };
-
-  const clearAllClosedTodos = () => {
-    setTodoStatus({ ...todoStatus, closedTodos: [] });
-  };
-
-  const moveTodo = (todoKey: string) => {
-    const todoIndex = todoStatus.openTodos.findIndex((t) => t.key === todoKey);
-    if (todoStatus.dropTargetIndex === null) throw new Error("DropTargetIndex is empty.");
-    setTodoStatus({
-      ...todoStatus,
-      openTodos: moved(todoStatus.openTodos, todoIndex, todoStatus.dropTargetIndex),
-      dropTargetIndex: null,
-    });
-  };
-
-  const setDropTargetIndex = (nextIndex: number | null) => {
-    if (todoStatus.dropTargetIndex === nextIndex) return;
-    setTodoStatus({ ...todoStatus, dropTargetIndex: nextIndex });
-  };
-
-  useEffect(() => {
-    repository.saveTodos([...todoStatus.openTodos, ...todoStatus.closedTodos]);
-  }, [todoStatus]);
-
-  useEffect(() => {
-    setTodoStatus({
-      openTodos: repository.getOpenTodos(),
-      closedTodos: repository.getClosedTodos(),
-      dropTargetIndex: null,
-    });
-  }, [repository]);
-
-  return [
-    todoStatus,
-    setTodoStatus,
+export default function TodoList() {
+  const {
+    openTodos,
+    closedTodos,
+    dropTargetIndex,
+    closeTodo,
+    reopenTodo,
     addTodo,
-    toggleTodo,
     clearTodo,
     setDropTargetIndex,
     moveTodo,
     clearAllClosedTodos,
-  ] as const;
-}
+  } = useTodoListFromContext();
 
-type Props = {
-  repository: TodoRepository;
-};
-
-export default function TodoList(props: Props) {
-  const [todoStatus, , addTodo, toggleTodo, clearTodo, setDropTargetIndex, moveTodo, clearAllClosedTodos] = useTodos(
-    props.repository
-  );
   const [foldingClosedTodos, toggleFoldingClosedTodos] = useReducer((state: boolean) => !state, true);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -137,7 +58,8 @@ export default function TodoList(props: Props) {
               e.stopPropagation();
               e.preventDefault();
               const todoKey = e.dataTransfer?.getData("todo-key");
-              if (todoKey) moveTodo(todoKey);
+              const todo = openTodos.find((t) => t.key === todoKey);
+              if (todo) moveTodo(todo);
             }}
           >
             <ul>
@@ -147,21 +69,17 @@ export default function TodoList(props: Props) {
                 </label>
                 + <input id="new-todo" className="focus:outline-none ml-1 w-11/12" onKeyDown={onKeyDown} type="text" />
               </li>
-              {todoStatus.openTodos.map((todo, index) => (
+              {openTodos.map((todo, index) => (
                 <OpenTodoItem
                   key={todo.key}
                   todo={todo}
                   index={index}
-                  toggleTodo={toggleTodo}
-                  isNext={index === todoStatus.dropTargetIndex}
+                  closeTodo={closeTodo}
+                  isNext={index === dropTargetIndex}
                   setNextIndex={setDropTargetIndex}
                 />
               ))}
-              <li
-                className={
-                  todoStatus.dropTargetIndex === todoStatus.openTodos.length ? "border-t-2 border-blue-500" : "border-t"
-                }
-              />
+              <li className={dropTargetIndex === openTodos.length ? "border-t-2 border-blue-500" : "border-t"} />
             </ul>
           </div>
 
@@ -170,7 +88,7 @@ export default function TodoList(props: Props) {
               <h2>closed</h2>
               <div
                 className="ml-auto mr-2"
-                hidden={foldingClosedTodos || todoStatus.closedTodos.length === 0}
+                hidden={foldingClosedTodos || closedTodos.length === 0}
                 onClick={() => setModalOpen(true)}
                 data-testid="clear-all-closed-todos"
               >
@@ -179,8 +97,8 @@ export default function TodoList(props: Props) {
               <ToggleFoldingButton folding={foldingClosedTodos} onClick={toggleFoldingClosedTodos} />
             </div>
             <ul className="divide-y" hidden={foldingClosedTodos}>
-              {todoStatus.closedTodos.map((todo) => (
-                <ClosedTodoItem key={todo.key} todo={todo} toggleTodo={toggleTodo} clearTodo={clearTodo} />
+              {closedTodos.map((todo) => (
+                <ClosedTodoItem key={todo.key} todo={todo} reopenTodo={reopenTodo} clearTodo={clearTodo} />
               ))}
             </ul>
           </div>

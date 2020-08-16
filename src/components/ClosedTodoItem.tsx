@@ -5,7 +5,7 @@ import { Todo } from "../lib/todo";
 type Props = {
   key: string;
   todo: Todo;
-  toggleTodo: (todo: Todo) => void;
+  reopenTodo: (todo: Todo) => void;
   clearTodo: (todo: Todo) => void;
 };
 
@@ -15,7 +15,7 @@ export default function ClosedTodoItem(props: Props) {
       <input
         className="my-auto mr-2"
         type="checkbox"
-        onClick={() => props.toggleTodo(props.todo)}
+        onClick={() => props.reopenTodo(props.todo)}
         defaultChecked={true}
       />
       <p className="line-through">{props.todo.name}</p>

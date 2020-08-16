@@ -5,7 +5,7 @@ type Props = {
   key: string;
   todo: Todo;
   index: number;
-  toggleTodo: (todo: Todo) => void;
+  closeTodo: (todo: Todo) => void;
   setNextIndex: (nextIndex: number) => void;
   isNext: boolean;
 };
@@ -31,7 +31,7 @@ export default function OpenTodoItem(props: Props) {
         props.setNextIndex(isUpper ? props.index : props.index + 1);
       }}
     >
-      <input className="my-auto mr-2" type="checkbox" onClick={() => props.toggleTodo(props.todo)} />
+      <input className="my-auto mr-2" type="checkbox" onClick={() => props.closeTodo(props.todo)} />
       <p>{props.todo.name}</p>
     </li>
   );
