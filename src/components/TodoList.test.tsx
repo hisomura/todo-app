@@ -4,17 +4,12 @@ import userEvent from "@testing-library/user-event";
 import TodoList from "./TodoList";
 import { Todo } from "../lib/todo";
 import { MockTodoRepository } from "../lib/repository";
-import { TodoListProvider } from "./todoListHook";
 
 describe("TodoList.test.tsx", () => {
   afterEach(cleanup);
 
   test("Add and close a todo. Then expand closed todo list. Then Reopen a todo.", async () => {
-    render(
-      <TodoListProvider repository={new MockTodoRepository()}>
-        <TodoList />
-      </TodoListProvider>
-    );
+    render(<TodoList repository={new MockTodoRepository()} />);
 
     // Add a todo
     expect(screen.queryByText(/Add Test/)).toBeNull();
@@ -49,11 +44,7 @@ describe("TodoList.test.tsx", () => {
       Todo.create("Measure my body weight", true),
     ]);
 
-    render(
-      <TodoListProvider repository={repository}>
-        <TodoList />
-      </TodoListProvider>
-    );
+    render(<TodoList repository={repository} />);
 
     // Make sure closed todos exist.
     const closedTodos = screen.getAllByTestId("closed-todo-item");

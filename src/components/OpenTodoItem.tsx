@@ -1,17 +1,16 @@
 import React, { DragEventHandler } from "react";
 import { Todo } from "../lib/todo";
+import { useTodoListFromContext } from "./todoListHook";
 
 type Props = {
   key: string;
   todo: Todo;
   index: number;
-  closeTodo: (todo: Todo) => void;
-  setNextIndex: (nextIndex: number) => void;
-  isNext: boolean;
 };
 
 export default function OpenTodoItem(props: Props) {
-  const className = "flex py-2 " + (props.isNext ? "border-t-2 border-blue-500" : "border-t");
+  const { dropTargetIndex, closeTodo, setDropTargetIndex } = useTodoListFromContext();
+  const className = "flex py-2 " + (props.index === dropTargetIndex ? "border-t-2 border-blue-500" : "border-t");
   const onDragStart: DragEventHandler = (e) => {
     e.dataTransfer!.setData("todo-key", props.todo.key);
     e.dataTransfer!.effectAllowed = "move";
@@ -28,10 +27,10 @@ export default function OpenTodoItem(props: Props) {
         const rect = (e.target as HTMLLIElement).getBoundingClientRect();
         const middleHeight = rect.top + rect.height / 2;
         const isUpper = middleHeight > e.clientY;
-        props.setNextIndex(isUpper ? props.index : props.index + 1);
+        setDropTargetIndex(isUpper ? props.index : props.index + 1);
       }}
     >
-      <input className="my-auto mr-2" type="checkbox" onClick={() => props.closeTodo(props.todo)} />
+      <input className="my-auto mr-2" type="checkbox" onClick={() => closeTodo(props.todo)} />
       <p>{props.todo.name}</p>
     </li>
   );

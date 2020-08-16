@@ -3,7 +3,6 @@ import TodoList from "../components/TodoList";
 import { LocalStorageTodoRepository, TodoRepository } from "../lib/repository";
 import { loginWithGithub, logOut } from "../lib/firebase";
 import LoginButton from "../components/LoginButton";
-import { TodoListProvider } from "../components/todoListHook";
 
 type ApplicationState = {
   userId: string | null;
@@ -61,10 +60,7 @@ export default function Home() {
           <LoginButton onclick={login} message="Login with Github" />
         )}
       </div>
-
-      <TodoListProvider repository={state.todoRepository}>
-        <TodoList />
-      </TodoListProvider>
+      <TodoList repository={state.todoRepository} />
     </div>
   );
 }
