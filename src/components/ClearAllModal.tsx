@@ -1,16 +1,16 @@
-import React from 'react'
+import React from "react";
 
 type Props = {
-  open: boolean
-  onClear: () => void
-  onClose: () => void
-}
+  open: boolean;
+  onClear: () => void;
+  onClose: () => void;
+};
 
 export default function ClearAllModal(props: Props) {
   const onClearButtonClick = () => {
-    props.onClear()
-    props.onClose()
-  }
+    props.onClear();
+    props.onClose();
+  };
   return (
     <>
       <div onClick={props.onClose} hidden={!props.open} className="absolute inset-0 bg-gray-500 opacity-75" />
@@ -26,5 +26,5 @@ export default function ClearAllModal(props: Props) {
         </div>
       </div>
     </>
-  )
+  );
 }

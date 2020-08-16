@@ -29,7 +29,7 @@ module.exports = {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: 'v8',
+  coverageProvider: "v8",
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -60,8 +60,8 @@ module.exports = {
   // A set of global variables that need to be available in all test environments
   // globals: {},
   globals: {
-    'ts-jest': {
-      tsConfig: 'tsconfig.jest.json',
+    "ts-jest": {
+      tsConfig: "tsconfig.jest.json",
     },
   },
 
@@ -96,7 +96,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  preset: 'ts-jest',
+  preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -132,7 +132,7 @@ module.exports = {
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
-  setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
+  setupFilesAfterEnv: ["@testing-library/jest-dom/extend-expect"],
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
@@ -191,4 +191,4 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-}
+};

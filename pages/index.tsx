@@ -1,4 +1,3 @@
 import Home from "../src/pages";
 
-export default Home
-
+export default Home;

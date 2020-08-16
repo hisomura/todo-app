@@ -1,7 +1,7 @@
-import { moved } from './array'
+import { moved } from "./array";
 
-describe('moved()', () => {
-  const testArray = [0, 1, 2, 3, 4, 5]
+describe("moved()", () => {
+  const testArray = [0, 1, 2, 3, 4, 5];
 
   test.each([
     [0, 0, [0, 1, 2, 3, 4, 5]],
@@ -18,7 +18,7 @@ describe('moved()', () => {
     [2, 10, testArray],
     [2, -10, testArray],
     [3, 3, testArray],
-  ])('moved(%i, %i)', (a, b, expected) => {
-    expect(moved(testArray, a, b)).toEqual(expected)
-  })
-})
+  ])("moved(%i, %i)", (a, b, expected) => {
+    expect(moved(testArray, a, b)).toEqual(expected);
+  });
+});
