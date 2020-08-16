@@ -12,13 +12,13 @@ export default function OpenTodoItem(props: Props) {
   const { dropTargetIndex, closeTodo, setDropTargetIndex } = useTodoListFromContext();
   const className = "flex py-2 " + (props.index === dropTargetIndex ? "border-t-2 border-blue-500" : "border-t");
   const onDragStart: DragEventHandler = (e) => {
-    e.dataTransfer!.setData("todo-key", props.todo.key);
+    e.dataTransfer!.setData("todo-id", props.todo.id);
     e.dataTransfer!.effectAllowed = "move";
   };
   return (
     <li
       draggable={true}
-      key={props.todo.key}
+      key={props.todo.id}
       className={className}
       data-testid="open-todo-item"
       onDragStart={onDragStart}

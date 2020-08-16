@@ -27,7 +27,7 @@ export default function ClosedTodoList() {
         </div>
         <ul className="divide-y" hidden={foldingClosedTodos}>
           {closedTodos.map((todo) => (
-            <ClosedTodoItem key={todo.key} todo={todo} />
+            <ClosedTodoItem key={todo.id} todo={todo} />
           ))}
         </ul>
       </div>

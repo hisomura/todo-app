@@ -4,9 +4,9 @@ import { convertDatabaseTodos, convertTodosForDatabase } from "./firebase";
 describe("convertTodosForDatabase", () => {
   test("converts Todos to DatabaseTodos", () => {
     const todos: Todo[] = [
-      { key: "key1", name: "hello", closed: false },
-      { key: "key2", name: "hello, world", closed: true },
-      { key: "key3", name: "Hi", closed: false },
+      { id: "key1", name: "hello", closed: false },
+      { id: "key2", name: "hello, world", closed: true },
+      { id: "key3", name: "Hi", closed: false },
     ];
 
     const databaseTodos = convertTodosForDatabase(todos);
@@ -33,11 +33,12 @@ describe("convertDatabaseTodosToTodos", () => {
     };
 
     const todos = convertDatabaseTodos(databaseTodos);
-    expect(todos).toEqual([
-      { key: "key3", name: "Hi", closed: false },
-      { key: "key1", name: "hello", closed: false },
-      { key: "key2", name: "hello, world", closed: true },
-    ]);
+    const expected: Todo[] = [
+      { id: "key3", name: "Hi", closed: false },
+      { id: "key1", name: "hello", closed: false },
+      { id: "key2", name: "hello, world", closed: true },
+    ]
+    expect(todos).toEqual(expected);
   });
 
   test("converts {} to []", () => {

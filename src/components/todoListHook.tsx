@@ -23,7 +23,7 @@ function useTodoList(repository: TodoRepository) {
   const closeTodo = (todo: Todo) => {
     setTodoStatus({
       ...state,
-      openTodos: state.openTodos.filter((t) => t.key !== todo.key),
+      openTodos: state.openTodos.filter((t) => t.id !== todo.id),
       closedTodos: [...state.closedTodos, todo],
     });
   };
@@ -32,19 +32,19 @@ function useTodoList(repository: TodoRepository) {
     setTodoStatus({
       ...state,
       openTodos: [...state.openTodos, todo],
-      closedTodos: state.closedTodos.filter((t) => t.key !== todo.key),
+      closedTodos: state.closedTodos.filter((t) => t.id !== todo.id),
     });
   };
 
   const clearTodo = (todo: Todo) =>
-    setTodoStatus({ ...state, closedTodos: state.closedTodos.filter((t) => t.key !== todo.key) });
+    setTodoStatus({ ...state, closedTodos: state.closedTodos.filter((t) => t.id !== todo.id) });
 
   const clearAllClosedTodos = () => setTodoStatus({ ...state, closedTodos: [] });
 
   const moveTodo = (todo: Todo) => {
     if (state.dropTargetIndex === null) throw new Error("DropTargetIndex is empty.");
-    const todoIndex = state.openTodos.findIndex((t) => t.key === todo.key);
-    if (todoIndex === undefined) throw new Error(`Todo(${todo.key}) not exists.`);
+    const todoIndex = state.openTodos.findIndex((t) => t.id === todo.id);
+    if (todoIndex === undefined) throw new Error(`Todo(${todo.id}) not exists.`);
     setTodoStatus({
       ...state,
       openTodos: moved(state.openTodos, todoIndex, state.dropTargetIndex),

@@ -23,14 +23,14 @@ export default function OpenTodoList() {
       onDrop={(e) => {
         e.stopPropagation();
         e.preventDefault();
-        const todoKey = e.dataTransfer?.getData("todo-key");
-        const todo = openTodos.find((t) => t.key === todoKey);
+        const todoId = e.dataTransfer?.getData("todo-id");
+        const todo = openTodos.find((t) => t.id === todoId);
         if (todo) moveTodo(todo);
       }}
     >
       <ul>
         {openTodos.map((todo, index) => (
-          <OpenTodoItem key={todo.key} todo={todo} index={index} />
+          <OpenTodoItem key={todo.id} todo={todo} index={index} />
         ))}
         <li className={dropTargetIndex === openTodos.length ? "border-t-2 border-blue-500" : "border-t"} />
       </ul>

@@ -103,12 +103,12 @@ export const firebaseTest = async () => {
     });
 };
 
-type DatabaseTodo = Omit<Todo, "key"> & { order: number };
+type DatabaseTodo = Omit<Todo, "id"> & { order: number };
 type DatabaseTodos = { [key: string]: DatabaseTodo };
 
 export function convertTodosForDatabase(todos: Todo[]) {
-  return todos.reduce<DatabaseTodos>((acc, { key, ...rest }, index) => {
-    acc[key] = { ...rest, order: index + 1 };
+  return todos.reduce<DatabaseTodos>((acc, { id, ...rest }, index) => {
+    acc[id] = { ...rest, order: index + 1 };
     return acc;
   }, {});
 }
@@ -117,7 +117,7 @@ export function convertDatabaseTodos(databaseTodos: DatabaseTodos) {
   return Object.keys(databaseTodos)
     .map((key) => ({
       ...databaseTodos[key],
-      key,
+      id: key,
     }))
     .sort((a, b) => a.order - b.order)
     .map(({ order, ...rest }) => rest);
