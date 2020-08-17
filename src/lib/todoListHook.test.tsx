@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 import { useTodoList } from "./todoListHook";
-import { MockTodoRepository } from "../lib/repository";
-import { Todo } from "../lib/todo";
+import { MockTodoRepository } from "./repository";
+import { Todo } from "./todo";
 
 
 describe("todoListHook", () => {

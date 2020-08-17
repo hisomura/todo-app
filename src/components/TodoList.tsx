@@ -1,8 +1,8 @@
 import React from "react";
-import OpenTodoList from "./OpenTodoList";
-import ClosedTodoList from "./ClosedTodoList";
+import OpenTodoList from "./open/OpenTodoList";
+import ClosedTodoList from "./closed/ClosedTodoList";
 import { TodoRepository } from "../lib/repository";
-import { TodoListProvider } from "./todoListHook";
+import { TodoListProvider } from "../lib/todoListHook";
 import InputTodo from "./InputTodo";
 
 type Props = {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Todo } from "../lib/todo";
-import { TodoRepository } from "../lib/repository";
-import { moved } from "../lib/array";
+import { Todo } from "./todo";
+import { TodoRepository } from "./repository";
+import { moved } from "./array";
 
 type TodosState = {
   openTodos: Todo[];

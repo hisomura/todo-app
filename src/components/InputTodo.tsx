@@ -1,6 +1,6 @@
 import React, { KeyboardEventHandler } from "react";
 import { Todo } from "../lib/todo";
-import { useTodoListFromContext } from "./todoListHook";
+import { useTodoListFromContext } from "../lib/todoListHook";
 
 export default function InputTodo() {
   const { addTodo } = useTodoListFromContext();

@@ -1,6 +1,6 @@
 import OpenTodoItem from "./OpenTodoItem";
 import React, { DragEventHandler } from "react";
-import { useTodoListFromContext } from "./todoListHook";
+import { useTodoListFromContext } from "../../lib/todoListHook";
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault();
 

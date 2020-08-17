@@ -1,7 +1,7 @@
 import React from "react";
 import { MdClose } from "react-icons/md";
-import { Todo } from "../lib/todo";
-import { useTodoListFromContext } from "./todoListHook";
+import { Todo } from "../../lib/todo";
+import { useTodoListFromContext } from "../../lib/todoListHook";
 
 type Props = {
   key: string;

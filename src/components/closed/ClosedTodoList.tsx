@@ -1,7 +1,7 @@
-import ToggleFoldingButton from "./ToggleFoldingButton";
+import ToggleFoldingButton from "../ToggleFoldingButton";
 import ClosedTodoItem from "./ClosedTodoItem";
 import React, { useReducer, useState } from "react";
-import { useTodoListFromContext } from "./todoListHook";
+import { useTodoListFromContext } from "../../lib/todoListHook";
 import ClearAllModal from "./ClearAllModal";
 import { MdClearAll } from "react-icons/md";
 
