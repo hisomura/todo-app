@@ -3,6 +3,7 @@ import TodoListContainer from "../components/TodoListContainer";
 import { LocalStorageTodoRepository, TodoRepository } from "../lib/repository";
 import { loginWithGithub, logOut } from "../lib/firebase";
 import LoginButton from "../components/LoginButton";
+import { TodoListProvider } from "../lib/todoListHook";
 
 type ApplicationState = {
   userId: string | null;
@@ -61,14 +62,18 @@ export default function Home() {
         )}
       </div>
       <div className="flex">
-        <TodoListContainer repository={state.todoRepository} />
-        <div className="mx-6 pt-2 z-0">
-          <div className="w-80 shadow-xl rounded px-4 pb-4">
-            <div className="pt-4">
-              <h1 className="cursor-pointer ">+ New Todo List</h1>
+        <TodoListProvider repository={state.todoRepository}>
+          {state.todoRepository.getTodoLists().map((list) => {
+            return <TodoListContainer key={list.id} list={list} />;
+          })}
+          <div className="mx-6 pt-2 z-0">
+            <div className="w-96 shadow-xl rounded px-4 pb-4">
+              <div className="pt-4">
+                <h1 className="cursor-pointer ">+ New Todo List</h1>
+              </div>
             </div>
           </div>
-        </div>
+        </TodoListProvider>
       </div>
     </div>
   );

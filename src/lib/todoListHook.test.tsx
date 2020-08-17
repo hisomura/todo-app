@@ -3,7 +3,6 @@ import { useTodoList } from "./todoListHook";
 import { MockTodoRepository } from "./repository";
 import { Todo } from "./todo";
 
-
 describe("todoListHook", () => {
   test("adds a todo", () => {
     const repository = new MockTodoRepository();

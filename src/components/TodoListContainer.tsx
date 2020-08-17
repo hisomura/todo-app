@@ -1,29 +1,26 @@
 import React from "react";
 import OpenTodoList from "./open/OpenTodoList";
 import ClosedTodoList from "./closed/ClosedTodoList";
-import { TodoRepository } from "../lib/repository";
-import { TodoListProvider } from "../lib/todoListHook";
 import InputTodo from "./InputTodo";
+import { TodoList } from "../lib/todo";
 
 type Props = {
-  repository: TodoRepository;
+  list: TodoList;
 };
 
 export default function TodoListContainer(props: Props) {
   return (
     <>
-      <TodoListProvider repository={props.repository}>
-        <div className="mx-6 pt-2 z-0">
-          <div className="w-96 shadow-xl rounded px-4 pb-4">
-            <div className="pt-4">
-              <h1>TodoList1</h1>
-            </div>
-            <InputTodo />
-            <OpenTodoList />
-            <ClosedTodoList />
+      <div className="mx-6 pt-2 z-0">
+        <div className="w-96 shadow-xl rounded px-4 pb-4">
+          <div className="pt-4">
+            <h1>{props.list.name}</h1>
           </div>
+          <InputTodo />
+          <OpenTodoList />
+          <ClosedTodoList />
         </div>
-      </TodoListProvider>
+      </div>
     </>
   );
 }

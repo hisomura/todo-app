@@ -1,6 +1,8 @@
-import { Todo } from "./todo";
+import { Todo, TodoList } from "./todo";
 
 export interface TodoRepository {
+  getTodoLists(): TodoList[];
+
   saveTodos(todos: Todo[]): void;
 
   getTodos(): Todo[];
@@ -14,6 +16,12 @@ export interface TodoRepository {
 
 export class LocalStorageTodoRepository implements TodoRepository {
   protected todos: Todo[] = [];
+
+  protected todoLists: TodoList[] = [];
+
+  getTodoLists() {
+    return this.todoLists;
+  }
 
   static create() {
     const repository = new LocalStorageTodoRepository();
@@ -48,6 +56,16 @@ export class LocalStorageTodoRepository implements TodoRepository {
 
 export class MockTodoRepository implements TodoRepository {
   protected todos: Todo[] = [];
+
+  protected todoLists: TodoList[] = [];
+
+  getTodoLists() {
+    return this.todoLists;
+  }
+
+  saveTodoList(todoList: TodoList) {
+    this.todoLists = [...this.todoLists, todoList];
+  }
 
   saveTodos(todos: Todo[]) {
     this.todos = todos;

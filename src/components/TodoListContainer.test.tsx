@@ -2,14 +2,21 @@ import React from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TodoListContainer from "./TodoListContainer";
-import { Todo } from "../lib/todo";
+import { Todo, TodoList } from "../lib/todo";
 import { MockTodoRepository } from "../lib/repository";
+import { TodoListProvider } from "../lib/todoListHook";
 
 describe("TodoList.tsx", () => {
   afterEach(cleanup);
 
   test("adds and closes a todo, then expands closed todo list, then reopens a todo", async () => {
-    render(<TodoListContainer repository={new MockTodoRepository()} />);
+    const repository = new MockTodoRepository();
+    repository.saveTodoList(TodoList.create("TodoList1"));
+    render(
+      <TodoListProvider repository={repository}>
+        <TodoListContainer list={repository.getTodoLists()[0]} />;
+      </TodoListProvider>
+    );
 
     // Add a todo
     expect(screen.queryByText(/Add Test/)).toBeNull();
@@ -38,13 +45,18 @@ describe("TodoList.tsx", () => {
 
   test("clears all closed todos", async () => {
     const repository = new MockTodoRepository();
+    repository.saveTodoList(TodoList.create("TodoList1"));
     repository.saveTodos([
       Todo.create("Wash dishes", true),
       Todo.create("Clean my room", true),
       Todo.create("Measure my body weight", true),
     ]);
 
-    render(<TodoListContainer repository={repository} />);
+    render(
+      <TodoListProvider repository={repository}>
+        <TodoListContainer list={repository.getTodoLists()[0]} />;
+      </TodoListProvider>
+    );
 
     // Make sure closed todos exist.
     const closedTodos = screen.getAllByTestId("closed-todo-item");

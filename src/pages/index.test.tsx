@@ -3,12 +3,13 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Home from "./index";
 import { MockTodoRepository } from "../lib/repository";
-import { Todo } from "../lib/todo";
+import { Todo, TodoList } from "../lib/todo";
 
 jest.mock("../lib/firebase", () => {
   return {
     loginWithGithub: () => {
       const repository = new MockTodoRepository();
+      repository.saveTodoList(TodoList.create("TodoList1"));
       repository.saveTodos([Todo.create("hello", false)]);
       return ["user-id-1", repository];
     },
@@ -17,11 +18,6 @@ jest.mock("../lib/firebase", () => {
 
 describe("index.tsx", () => {
   afterEach(cleanup);
-
-  test("shows the title", async () => {
-    render(<Home />);
-    expect(screen.getByText(/TodoList1/)).toBeVisible();
-  });
 
   test("shows a user ID when a user click login button", async () => {
     render(<Home />);

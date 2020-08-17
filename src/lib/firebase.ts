@@ -1,7 +1,7 @@
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
-import { Todo } from "./todo";
+import { Todo, TodoList } from "./todo";
 import { TodoRepository } from "./repository";
 
 const firebaseConfig = {
@@ -49,6 +49,12 @@ export class DatabaseTodoRepository implements TodoRepository {
   protected todos: Todo[] = [];
   protected uploaded: boolean = true;
   protected intervalId: number | null = null;
+
+  protected todoLists: TodoList[] = [];
+
+  getTodoLists() {
+    return this.todoLists;
+  }
 
   constructor(protected app: firebase.app.App) {}
 
