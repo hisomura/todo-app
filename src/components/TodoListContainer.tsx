@@ -9,7 +9,7 @@ type Props = {
   repository: TodoRepository;
 };
 
-export default function TodoList(props: Props) {
+export default function TodoListContainer(props: Props) {
   return (
     <>
       <TodoListProvider repository={props.repository}>

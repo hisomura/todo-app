@@ -1,7 +1,7 @@
 import React from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import TodoList from "./TodoList";
+import TodoListContainer from "./TodoListContainer";
 import { Todo } from "../lib/todo";
 import { MockTodoRepository } from "../lib/repository";
 
@@ -9,7 +9,7 @@ describe("TodoList.tsx", () => {
   afterEach(cleanup);
 
   test("adds and closes a todo, then expands closed todo list, then reopens a todo", async () => {
-    render(<TodoList repository={new MockTodoRepository()} />);
+    render(<TodoListContainer repository={new MockTodoRepository()} />);
 
     // Add a todo
     expect(screen.queryByText(/Add Test/)).toBeNull();
@@ -44,7 +44,7 @@ describe("TodoList.tsx", () => {
       Todo.create("Measure my body weight", true),
     ]);
 
-    render(<TodoList repository={repository} />);
+    render(<TodoListContainer repository={repository} />);
 
     // Make sure closed todos exist.
     const closedTodos = screen.getAllByTestId("closed-todo-item");

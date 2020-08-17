@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import TodoList from "../components/TodoList";
+import TodoListContainer from "../components/TodoListContainer";
 import { LocalStorageTodoRepository, TodoRepository } from "../lib/repository";
 import { loginWithGithub, logOut } from "../lib/firebase";
 import LoginButton from "../components/LoginButton";
@@ -61,7 +61,7 @@ export default function Home() {
         )}
       </div>
       <div className="flex">
-        <TodoList repository={state.todoRepository} />
+        <TodoListContainer repository={state.todoRepository} />
         <div className="mx-6 pt-2 z-0">
           <div className="w-80 shadow-xl rounded px-4 pb-4">
             <div className="pt-4">
