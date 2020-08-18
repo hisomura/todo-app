@@ -103,19 +103,22 @@ export const firebaseTest = async () => {
     });
 };
 
-type DatabaseTodo = Omit<Todo, "key">;
+type DatabaseTodo = Omit<Todo, "key"> & { order: number };
 type DatabaseTodos = { [key: string]: DatabaseTodo };
 
 export function convertTodosForDatabase(todos: Todo[]) {
-  return todos.reduce<DatabaseTodos>((acc, { key, ...rest }) => {
-    acc[key] = rest;
+  return todos.reduce<DatabaseTodos>((acc, { key, ...rest }, index) => {
+    acc[key] = { ...rest, order: index + 1 };
     return acc;
   }, {});
 }
 
 export function convertDatabaseTodos(databaseTodos: DatabaseTodos) {
-  return Object.keys(databaseTodos).map((key) => ({
-    ...databaseTodos[key],
-    key,
-  }));
+  return Object.keys(databaseTodos)
+    .map((key) => ({
+      ...databaseTodos[key],
+      key,
+    }))
+    .sort((a, b) => a.order - b.order)
+    .map(({ order, ...rest }) => rest);
 }
