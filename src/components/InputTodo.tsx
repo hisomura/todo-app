@@ -1,9 +1,9 @@
 import React, { KeyboardEventHandler } from "react";
 import { Todo } from "../lib/todo";
-import { useTodoListFromContext } from "../lib/todoListHook";
+import { useTodosHook } from "../lib/todosHook";
 
 export default function InputTodo() {
-  const { addTodo } = useTodoListFromContext();
+  const { addTodo } = useTodosHook();
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
     // if (event.keyCode === 229) return

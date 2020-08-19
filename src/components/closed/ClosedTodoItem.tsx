@@ -1,7 +1,7 @@
 import React from "react";
 import { MdClose } from "react-icons/md";
 import { Todo } from "../../lib/todo";
-import { useTodoListFromContext } from "../../lib/todoListHook";
+import { useTodosHook } from "../../lib/todosHook";
 
 type Props = {
   key: string;
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function ClosedTodoItem(props: Props) {
-  const { reopenTodo, clearTodo } = useTodoListFromContext();
+  const { reopenTodo, clearTodo } = useTodosHook();
   return (
     <li key={props.todo.id} className="flex py-2" data-testid="closed-todo-item">
       <input className="my-auto mr-2" type="checkbox" onClick={() => reopenTodo(props.todo)} defaultChecked={true} />

@@ -1,6 +1,6 @@
 import React, { DragEventHandler } from "react";
 import { Todo } from "../../lib/todo";
-import { useTodoListFromContext } from "../../lib/todoListHook";
+import { useTodosHook } from "../../lib/todosHook";
 
 type Props = {
   key: string;
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function OpenTodoItem(props: Props) {
-  const { dropTargetIndex, closeTodo, setDropTargetIndex } = useTodoListFromContext();
+  const { dropTargetIndex, closeTodo, setDropTargetIndex } = useTodosHook();
   const className = "flex py-2 " + (props.index === dropTargetIndex ? "border-t-2 border-blue-500" : "border-t");
   const onDragStart: DragEventHandler = (e) => {
     e.dataTransfer!.setData("todo-id", props.todo.id);

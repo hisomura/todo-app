@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
 import TodoListContainer from "../components/TodoListContainer";
-import { LocalStorageTodoRepository, TodoRepository } from "../lib/repository";
-import { loginWithGithub, logOut } from "../lib/firebase";
-import LoginButton from "../components/LoginButton";
-import { TodoListProvider } from "../lib/todoListHook";
+import LoginButton from "../components/buttons/LoginButton";
+import { getMockRepository } from "../repositories/mockRepository";
+import { RepositoryWriterProvider } from "../repositories/ReposiotryProvider";
+import NewTodoList from "../components/NewTodoList";
+import { RepositoryReader, RepositoryWriter } from "../repositories/repository";
 
 type ApplicationState = {
   userId: string | null;
-  todoRepository: TodoRepository | null;
+  repository: {
+    reader: RepositoryReader;
+    writer: RepositoryWriter;
+  } | null;
 };
 
 function useApplicationState() {
   const [state, setState] = useState<ApplicationState>({
     userId: null,
-    todoRepository: null,
+    repository: null,
   });
 
   const updateState = (params: Partial<ApplicationState>) => {
@@ -27,29 +31,34 @@ export default function Home() {
   const [state, updateState] = useApplicationState();
 
   useEffect(() => {
-    updateState({ todoRepository: LocalStorageTodoRepository.create() });
+    const repository = getMockRepository([{ id: "test", name: "TodoList!", todos: [] }]);
+    updateState({ repository });
   }, []);
 
-  if (!state.todoRepository) {
+  if (!state.repository) {
     return <div>now loading...</div>;
   }
 
   const login = async () => {
-    const [userId, repository] = await loginWithGithub();
-    if (state.todoRepository) {
-      const todos = state.todoRepository.getTodos();
-      repository.saveTodos([...repository.getTodos(), ...todos]);
-      state.todoRepository.saveTodos([]);
-    }
-    updateState({ userId, todoRepository: repository });
+    const repository = getMockRepository([{ id: "test", name: "TodoList!", todos: [] }]);
+    // FIXME
+    // const [userId, repository] = await loginWithGithub();
+    // if (state.todoRepository) {
+    //   const todos = state.todoRepository.getTodos();
+    //   repository.saveTodos([...repository.getTodos(), ...todos]);
+    //   state.todoRepository.saveTodos([]);
+    // }
+    console.log(repository.reader.getTodoLists());
+    updateState({ userId: "test", repository });
   };
 
   const logout = async () => {
-    state.todoRepository?.close();
-    const repository = new LocalStorageTodoRepository();
-    repository.init();
-    updateState({ userId: null, todoRepository: repository });
-    await logOut();
+    // FIXME
+    // state.todoRepository?.close();
+    // const repository = new LocalStorageTodoRepository();
+    // repository.init();
+    // updateState({ userId: null, todoRepository: repository });
+    // await logOut();
   };
 
   return (
@@ -62,18 +71,12 @@ export default function Home() {
         )}
       </div>
       <div className="flex">
-        <TodoListProvider repository={state.todoRepository}>
-          {state.todoRepository.getTodoLists().map((list) => {
+        <RepositoryWriterProvider writer={state.repository.writer}>
+          {state.repository.reader.getTodoLists().map((list) => {
             return <TodoListContainer key={list.id} list={list} />;
           })}
-          <div className="mx-6 pt-2 z-0">
-            <div className="w-96 shadow-xl rounded px-4 pb-4">
-              <div className="pt-4">
-                <h1 className="cursor-pointer ">+ New Todo List</h1>
-              </div>
-            </div>
-          </div>
-        </TodoListProvider>
+          <NewTodoList />
+        </RepositoryWriterProvider>
       </div>
     </div>
   );

@@ -18,5 +18,20 @@ export type TodoList = {
 };
 
 export const TodoList = {
-  create: (name: string): TodoList => ({ id: uuidV4(), name, todos: [] }),
+  create: (name: string, todos: Todo[]): TodoList => ({ id: uuidV4(), name, todos }),
 };
+
+// class TodoList {
+//   constructor(readonly id: string, protected _name: string, protected _todos: Todo[]) {
+//   }
+//
+//   get openTodos() {
+//     return this._todos.filter((t) => !t.closed);
+//   }
+//
+//   get closedTodos() {
+//     return this._todos.filter((t) => t.closed);
+//   }
+//
+//
+// }

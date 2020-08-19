@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Todo } from "./todo";
-import { TodoRepository } from "./repository";
+import { Todo, TodoList } from "./todo";
 import { moved } from "./array";
+import { RepositoryWriter } from "../repositories/repository";
 
 type TodosState = {
   openTodos: Todo[];
@@ -9,12 +9,12 @@ type TodosState = {
   dropTargetIndex: number | null;
 };
 
-const TodoStateContext = React.createContext<undefined | ReturnType<typeof useTodoList>>(undefined);
+const TodoStateContext = React.createContext<undefined | ReturnType<typeof useTodos>>(undefined);
 
-function useTodoList(repository: TodoRepository) {
+function useTodos(writer: RepositoryWriter, todoList: TodoList) {
   const [state, setTodoStatus] = useState<TodosState>({
-    openTodos: repository.getOpenTodos(),
-    closedTodos: repository.getClosedTodos(),
+    openTodos: todoList.todos.filter((t) => !t.closed),
+    closedTodos: todoList.todos.filter((t) => t.closed),
     dropTargetIndex: null,
   });
 
@@ -60,15 +60,15 @@ function useTodoList(repository: TodoRepository) {
     setTodoStatus({ ...state, dropTargetIndex: nextIndex });
   };
 
-  useEffect(() => repository.saveTodos([...state.openTodos, ...state.closedTodos]), [state]);
+  useEffect(() => writer.storeTodos([...state.openTodos, ...state.closedTodos], todoList.id), [state]);
 
   useEffect(() => {
     setTodoStatus({
-      openTodos: repository.getOpenTodos(),
-      closedTodos: repository.getClosedTodos(),
+      openTodos: todoList.todos.filter((t) => !t.closed),
+      closedTodos: todoList.todos.filter((t) => t.closed),
       dropTargetIndex: null,
     });
-  }, [repository]);
+  }, [writer, todoList]);
 
   return {
     ...state,
@@ -85,16 +85,17 @@ function useTodoList(repository: TodoRepository) {
 
 type Props = {
   children: any;
-  repository: TodoRepository;
+  writer: RepositoryWriter;
+  todoList: TodoList;
 };
 
-function TodoListProvider({ children, repository }: Props) {
-  const todoList = useTodoList(repository);
+function TodosProvider({ children, writer, todoList }: Props) {
+  const todos = useTodos(writer, todoList);
 
-  return <TodoStateContext.Provider value={todoList}>{children}</TodoStateContext.Provider>;
+  return <TodoStateContext.Provider value={todos}>{children}</TodoStateContext.Provider>;
 }
 
-function useTodoListFromContext() {
+function useTodosHook() {
   const context = React.useContext(TodoStateContext);
   if (context === undefined) {
     throw new Error("useTodoListFromContext must be used within a TodoListProvider");
@@ -102,4 +103,4 @@ function useTodoListFromContext() {
   return context;
 }
 
-export { TodoListProvider, useTodoListFromContext, useTodoList };
+export { TodosProvider, useTodosHook, useTodos };

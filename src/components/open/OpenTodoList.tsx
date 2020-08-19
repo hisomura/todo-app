@@ -1,6 +1,6 @@
 import OpenTodoItem from "./OpenTodoItem";
 import React, { DragEventHandler } from "react";
-import { useTodoListFromContext } from "../../lib/todoListHook";
+import { useTodosHook } from "../../lib/todosHook";
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault();
 
@@ -9,7 +9,7 @@ function inRect(rect: DOMRect, clientX: number, clientY: number) {
 }
 
 export default function OpenTodoList() {
-  const { openTodos, dropTargetIndex, setDropTargetIndex, moveTodo } = useTodoListFromContext();
+  const { openTodos, dropTargetIndex, setDropTargetIndex, moveTodo } = useTodosHook();
 
   return (
     <div

@@ -3,19 +3,19 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TodoListContainer from "./TodoListContainer";
 import { Todo, TodoList } from "../lib/todo";
-import { MockTodoRepository } from "../lib/repository";
-import { TodoListProvider } from "../lib/todoListHook";
+import { RepositoryWriterProvider } from "../repositories/ReposiotryProvider";
+import { getMockRepository } from "../repositories/mockRepository";
 
-describe("TodoList.tsx", () => {
+describe("TodoListContainer.tsx", () => {
   afterEach(cleanup);
 
   test("adds and closes a todo, then expands closed todo list, then reopens a todo", async () => {
-    const repository = new MockTodoRepository();
-    repository.saveTodoList(TodoList.create("TodoList1"));
+    const todoList = TodoList.create("TodoList1", []);
+    const { writer } = getMockRepository([todoList]);
     render(
-      <TodoListProvider repository={repository}>
-        <TodoListContainer list={repository.getTodoLists()[0]} />;
-      </TodoListProvider>
+      <RepositoryWriterProvider writer={writer}>
+        <TodoListContainer list={todoList} />;
+      </RepositoryWriterProvider>
     );
 
     // Add a todo
@@ -44,18 +44,16 @@ describe("TodoList.tsx", () => {
   });
 
   test("clears all closed todos", async () => {
-    const repository = new MockTodoRepository();
-    repository.saveTodoList(TodoList.create("TodoList1"));
-    repository.saveTodos([
+    const todoList = TodoList.create("TodoList1", [
       Todo.create("Wash dishes", true),
       Todo.create("Clean my room", true),
       Todo.create("Measure my body weight", true),
     ]);
-
+    const { writer } = getMockRepository([todoList]);
     render(
-      <TodoListProvider repository={repository}>
-        <TodoListContainer list={repository.getTodoLists()[0]} />;
-      </TodoListProvider>
+      <RepositoryWriterProvider writer={writer}>
+        <TodoListContainer list={todoList} />;
+      </RepositoryWriterProvider>
     );
 
     // Make sure closed todos exist.
@@ -69,6 +67,6 @@ describe("TodoList.tsx", () => {
     userEvent.click(screen.getByTestId("clear-all-closed-todos")); // Open a modal.
     userEvent.click(await screen.findByText("Clear"));
     expect(screen.queryByTestId("closed-todo-item")).not.toBeInTheDocument();
-    expect(repository.getTodos()).toEqual([]);
+    // FIXME assert writer clear method called.
   });
 });

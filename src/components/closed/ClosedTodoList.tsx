@@ -1,12 +1,12 @@
-import ToggleFoldingButton from "../ToggleFoldingButton";
+import ToggleFoldingButton from "../buttons/ToggleFoldingButton";
 import ClosedTodoItem from "./ClosedTodoItem";
 import React, { useReducer, useState } from "react";
-import { useTodoListFromContext } from "../../lib/todoListHook";
+import { useTodosHook } from "../../lib/todosHook";
 import ClearAllModal from "./ClearAllModal";
 import { MdClearAll } from "react-icons/md";
 
 export default function ClosedTodoList() {
-  const { closedTodos, clearAllClosedTodos } = useTodoListFromContext();
+  const { closedTodos, clearAllClosedTodos } = useTodosHook();
   const [foldingClosedTodos, toggleFoldingClosedTodos] = useReducer((state: boolean) => !state, true);
   const [modalOpen, setModalOpen] = useState(false);
 
