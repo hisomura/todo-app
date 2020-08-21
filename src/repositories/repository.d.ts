@@ -3,7 +3,9 @@ import { Todo, TodoList } from "../lib/todo";
 export interface RepositoryWriter {
   storeTodoList(todoList: TodoList): void;
 
-  storeTodos(todos: Todo[], todoListId: TodoList['id']): void;
+  updateTodoList(listId: string, props: Partial<TodoList>): void;
+
+  storeTodos(listId: string, todos: Todo[]): void;
 }
 
 export interface RepositoryReader {

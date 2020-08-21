@@ -8,7 +8,18 @@ class MockRepositoryWriter implements RepositoryWriter {
     this.todoLists.push(todoList);
   }
 
-  storeTodos(_todos: Todo[], _todoListId: TodoList["id"]) {}
+  updateTodoList(listId: string, props: Partial<TodoList>) {
+    const index = this.todoLists.findIndex((l) => l.id === listId);
+    if (index === undefined) return;
+    this.todoLists[index] = {
+      ...this.todoLists[index],
+      ...props,
+    };
+  }
+
+  storeTodos(listId: string, todos: Todo[]) {
+    this.updateTodoList(listId, { todos });
+  }
 }
 
 class MockRepositoryReader implements RepositoryReader {

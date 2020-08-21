@@ -60,7 +60,7 @@ function useTodos(writer: RepositoryWriter, todoList: TodoList) {
     setTodoStatus({ ...state, dropTargetIndex: nextIndex });
   };
 
-  useEffect(() => writer.storeTodos([...state.openTodos, ...state.closedTodos], todoList.id), [state]);
+  useEffect(() => writer.storeTodos(todoList.id,[...state.openTodos, ...state.closedTodos]), [state]);
 
   useEffect(() => {
     setTodoStatus({
