@@ -1,5 +1,5 @@
 import React from "react";
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Todo, TodoList } from "../lib/todo";
 import { RepositoryWriterProvider } from "../repositories/ReposiotryProvider";
 import BoardContainer from "./BoardContainer";
@@ -7,8 +7,6 @@ import { getLocalStorageRepository } from "../repositories/localStorageRepositor
 import userEvent from "@testing-library/user-event";
 
 describe("BoardContainer.tsx", () => {
-  afterEach(cleanup);
-
   function setInitialLocalStorageData(todoLists: TodoList[]) {
     const { writer } = getLocalStorageRepository();
     todoLists.forEach((list) => writer.storeTodoList(list));

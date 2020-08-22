@@ -1,5 +1,5 @@
 import React from "react";
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Home from "./index";
 import { Todo, TodoList } from "../lib/todo";
@@ -16,8 +16,6 @@ jest.mock("../lib/firebase", () => {
 });
 
 describe("index.tsx", () => {
-  afterEach(cleanup);
-
   test("shows a user ID when a user click login button", async () => {
     // FIXME
     expect(true).toBe(true)

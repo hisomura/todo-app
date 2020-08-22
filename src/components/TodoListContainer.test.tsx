@@ -1,5 +1,5 @@
 import React from "react";
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TodoListContainer from "./TodoListContainer";
 import { Todo, TodoList } from "../lib/todo";
@@ -7,8 +7,6 @@ import { RepositoryWriterProvider } from "../repositories/ReposiotryProvider";
 import { getMockRepository } from "../repositories/mockRepository";
 
 describe("TodoListContainer.tsx", () => {
-  afterEach(cleanup);
-
   test("adds and closes a todo, then expands closed todo list, then reopens a todo", async () => {
     const todoList = TodoList.create("TodoList1", []);
     const { writer } = getMockRepository([todoList]);
