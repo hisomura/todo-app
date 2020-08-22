@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import TodoListContainer from "../components/TodoListContainer";
 import LoginButton from "../components/buttons/LoginButton";
 import { getMockRepository } from "../repositories/mockRepository";
 import { RepositoryWriterProvider } from "../repositories/ReposiotryProvider";
-import NewTodoList from "../components/NewTodoList";
 import { RepositoryReader, RepositoryWriter } from "../repositories/repository";
+import BoardContainer from "../components/BoardContainer";
 
 type ApplicationState = {
   userId: string | null;
@@ -70,14 +69,9 @@ export default function Home() {
           <LoginButton onclick={login} message="Login with Github" />
         )}
       </div>
-      <div className="flex">
-        <RepositoryWriterProvider writer={state.repository.writer}>
-          {state.repository.reader.getTodoLists().map((list) => {
-            return <TodoListContainer key={list.id} list={list} />;
-          })}
-          <NewTodoList />
-        </RepositoryWriterProvider>
-      </div>
+      <RepositoryWriterProvider writer={state.repository.writer}>
+        <BoardContainer todoLists={state.repository.reader.getTodoLists()} />
+      </RepositoryWriterProvider>
     </div>
   );
 }
