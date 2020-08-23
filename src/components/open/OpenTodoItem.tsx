@@ -31,7 +31,7 @@ export default function OpenTodoItem(props: Props) {
       }}
     >
       <input className="my-auto mr-2" type="checkbox" onClick={() => closeTodo(props.todo)} />
-      <p>{props.todo.name}</p>
+      <p className="text-sm">{props.todo.name}</p>
     </li>
   );
 }

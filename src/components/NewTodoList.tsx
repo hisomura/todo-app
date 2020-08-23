@@ -19,13 +19,13 @@ export default function NewTodoList(props: Props) {
 
   return (
     <div className="mx-6 pt-2 z-0">
-      <div className="w-96 shadow-xl rounded px-4 pb-4">
+      <div className="w-64 shadow-xl rounded px-4 pb-4">
         <div className="pt-4">
           {inputMode ? (
             <input
               type="text"
               id="new-todo-list"
-              className="focus:outline-none ml-1 w-11/12"
+              className="focus:outline-none ml-1 w-10/12"
               ref={inputEl}
               onKeyDown={onKeyDown}
             />

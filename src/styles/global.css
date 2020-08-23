@@ -4,7 +4,3 @@
 @tailwind components;
 /*noinspection CssInvalidAtRule*/
 @tailwind utilities;
-
-.w-96 {
-  width: 24em;
-}

@@ -13,7 +13,7 @@ export default function InputTodo() {
       <label htmlFor="new-todo" hidden={true}>
         Input new todo.
       </label>
-      + <input id="new-todo" className="focus:outline-none ml-1 w-11/12" onKeyDown={onKeyDown} type="text" />
+      + <input id="new-todo" className="focus:outline-none ml-1 w-10/12 text-sm" onKeyDown={onKeyDown} type="text" />
     </div>
   );
 }
