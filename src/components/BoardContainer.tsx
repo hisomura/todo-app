@@ -10,8 +10,8 @@ type Props = {
 export default function BoardContainer(props: Props) {
   const [todoLists, setTodoLists] = useState(props.todoLists);
 
-  const addTodoList = () => {
-    setTodoLists([...todoLists, TodoList.create("NewTodoList" + Math.random().toString().slice(5), [])]);
+  const addTodoList = (name: string) => {
+    setTodoLists([...todoLists, TodoList.create(name, [])]);
   };
 
   return (

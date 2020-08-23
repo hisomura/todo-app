@@ -1,17 +1,12 @@
-import React, { KeyboardEventHandler } from "react";
+import React from "react";
 import { Todo } from "../lib/todo";
 import { useTodosHook } from "../lib/todosHook";
+import { createInputTextOnKeyDownCallback } from "../lib/inputText";
 
 export default function InputTodo() {
   const { addTodo } = useTodosHook();
-  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
-    // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
-    // if (event.keyCode === 229) return
-    if (event.key !== "Enter") return;
-    if (event.currentTarget.value === "") return;
-    addTodo(Todo.create(event.currentTarget.value));
-    event.currentTarget.value = "";
-  };
+
+  const onKeyDown = createInputTextOnKeyDownCallback((input) => addTodo(Todo.create(input)));
 
   return (
     <div className="py-2">

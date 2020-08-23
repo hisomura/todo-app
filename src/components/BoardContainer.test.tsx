@@ -40,6 +40,7 @@ describe("BoardContainer.tsx", () => {
 
     expect(screen.queryByText(/NewTodoList/)).not.toBeInTheDocument();
     userEvent.click(screen.getByTestId("add-new-todo-list"));
+    await userEvent.type(document.activeElement!, "NewTodoList{enter}");
     expect(await screen.findByText(/NewTodoList/)).toBeVisible();
   });
 });
