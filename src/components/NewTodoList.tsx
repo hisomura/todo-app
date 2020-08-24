@@ -28,6 +28,7 @@ export default function NewTodoList(props: Props) {
               className="focus:outline-none ml-1 w-10/12"
               ref={inputEl}
               onKeyDown={onKeyDown}
+              onBlur={() => setInputMode(false)}
             />
           ) : (
             <h1 className="cursor-pointer " data-testid="add-new-todo-list" onClick={() => setInputMode(true)}>
