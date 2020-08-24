@@ -24,14 +24,14 @@ function useTodos(writer: RepositoryWriter, todoList: TodoList) {
     setTodoStatus({
       ...state,
       openTodos: state.openTodos.filter((t) => t.id !== todo.id),
-      closedTodos: [...state.closedTodos, todo],
+      closedTodos: [...state.closedTodos, { ...todo, closed: true }],
     });
   };
 
   const reopenTodo = (todo: Todo) => {
     setTodoStatus({
       ...state,
-      openTodos: [...state.openTodos, todo],
+      openTodos: [...state.openTodos, { ...todo, closed: false }],
       closedTodos: state.closedTodos.filter((t) => t.id !== todo.id),
     });
   };
@@ -60,7 +60,7 @@ function useTodos(writer: RepositoryWriter, todoList: TodoList) {
     setTodoStatus({ ...state, dropTargetIndex: nextIndex });
   };
 
-  useEffect(() => writer.storeTodos(todoList.id,[...state.openTodos, ...state.closedTodos]), [state]);
+  useEffect(() => writer.storeTodos(todoList.id, [...state.openTodos, ...state.closedTodos]), [state]);
 
   useEffect(() => {
     setTodoStatus({

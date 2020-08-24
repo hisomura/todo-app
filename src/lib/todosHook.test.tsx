@@ -24,7 +24,7 @@ describe("todosHook", () => {
 
     act(() => result.current.closeTodo(todo));
     expect(result.current.openTodos).toEqual([]);
-    expect(result.current.closedTodos).toEqual([todo]);
+    expect(result.current.closedTodos).toEqual([{...todo, closed: true}]);
   });
 
   test("reopens a todo", () => {
@@ -34,7 +34,7 @@ describe("todosHook", () => {
     const { result } = renderHook(() => useTodos(writer, todoList));
 
     act(() => result.current.reopenTodo(todo));
-    expect(result.current.openTodos).toEqual([todo]);
+    expect(result.current.openTodos).toEqual([{...todo, closed: false}]);
     expect(result.current.closedTodos).toEqual([]);
   });
 
