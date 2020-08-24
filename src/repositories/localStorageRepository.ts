@@ -1,13 +1,14 @@
 import { RepositoryReader, RepositoryWriter } from "./repository";
 import { Todo, TodoList } from "../lib/todo";
 
-const TODO_LISTS_STORAGE_KEY = "todoLists";
+const STORAGE_KEY = "todo-app";
 
 class LocalStorageRepositoryWriter implements RepositoryWriter {
   constructor(protected todoLists: TodoList[]) {}
 
   protected saveToLocalStorage() {
-    localStorage.setItem(TODO_LISTS_STORAGE_KEY, JSON.stringify(this.todoLists));
+    const boards = [{ id: 1, name: "default board", todoLists: this.todoLists }];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(boards));
   }
 
   storeTodoList(todoList: TodoList) {
@@ -39,8 +40,9 @@ class LocalStorageRepositoryReader implements RepositoryReader {
   readonly todoLists: TodoList[] = [];
 
   constructor() {
-    const serialized = localStorage?.getItem(TODO_LISTS_STORAGE_KEY);
-    this.todoLists = serialized ? JSON.parse(serialized) : [];
+    const serialized = localStorage?.getItem(STORAGE_KEY);
+    const unSerialized = serialized && JSON.parse(serialized);
+    this.todoLists = unSerialized ? unSerialized[0].todoLists : [];
   }
 
   getTodoLists(): TodoList[] {

@@ -21,15 +21,15 @@ describe("LocalStorageRepositoryWriter ", () => {
   function getDataFromStorage(key: string) {
     const serialized = localStorage.getItem(key);
     if (serialized === null) throw new Error(`key '${key}' not found`);
-    return JSON.parse(serialized);
+    return JSON.parse(serialized)[0].todoLists;
   }
 
   test("saves a new todo list", () => {
     const { writer } = getLocalStorageRepository();
-    const todoList = TodoList.create("TodoList1", [Todo.create("Todo1"), Todo.create("Todo2")]);
+    const todoList = TodoList.create("TodoList1", [Todo.create("Todo1"), Todo.create("Todo2", true)]);
 
     writer.storeTodoList(todoList);
-    expect(getDataFromStorage("todoLists")).toEqual([todoList]);
+    expect(getDataFromStorage("todo-app")).toEqual([todoList]);
   });
 
   test("overwrites a existing todo list", () => {
@@ -39,7 +39,7 @@ describe("LocalStorageRepositoryWriter ", () => {
 
     const update = { ...todoList, name: "newTodoList1" };
     writer.storeTodoList(update);
-    expect(getDataFromStorage("todoLists")).toEqual([update]);
+    expect(getDataFromStorage("todo-app")).toEqual([update]);
   });
 
   test("updates a todo list", () => {
@@ -49,7 +49,7 @@ describe("LocalStorageRepositoryWriter ", () => {
     writer.storeTodoList(todoList);
 
     writer.updateTodoList(todoList.id, { name: "newName" });
-    expect(getDataFromStorage("todoLists")[0].name).toBe("newName");
+    expect(getDataFromStorage("todo-app")[0].name).toBe("newName");
   });
 
   test("stores todos of a todo list", () => {
@@ -59,7 +59,7 @@ describe("LocalStorageRepositoryWriter ", () => {
 
     writer.storeTodos(todoList.id, [Todo.create("Todo3"), todoList.todos[1], todoList.todos[0]]);
 
-    const [first] = getDataFromStorage("todoLists");
+    const [first] = getDataFromStorage("todo-app");
     expect(first.todos[0].name).toBe("Todo3");
     expect(first.todos[1].name).toBe("Todo2");
     expect(first.todos[2].name).toBe("Todo1");

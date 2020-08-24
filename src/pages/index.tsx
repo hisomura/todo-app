@@ -4,6 +4,7 @@ import { getMockRepository } from "../repositories/mockRepository";
 import { RepositoryWriterProvider } from "../repositories/ReposiotryProvider";
 import { RepositoryReader, RepositoryWriter } from "../repositories/repository";
 import BoardContainer from "../components/BoardContainer";
+import { getLocalStorageRepository } from "../repositories/localStorageRepository";
 
 type ApplicationState = {
   userId: string | null;
@@ -30,7 +31,7 @@ export default function Home() {
   const [state, updateState] = useApplicationState();
 
   useEffect(() => {
-    const repository = getMockRepository([{ id: "test", name: "TodoList!", todos: [] }]);
+    const repository = getLocalStorageRepository();
     updateState({ repository });
   }, []);
 

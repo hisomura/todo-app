@@ -2,6 +2,7 @@ import TodoListContainer from "./TodoListContainer";
 import NewTodoList from "./NewTodoList";
 import React, { useState } from "react";
 import { TodoList } from "../lib/todo";
+import { useRepositoryWriter } from "../repositories/ReposiotryProvider";
 
 type Props = {
   todoLists: TodoList[];
@@ -9,9 +10,12 @@ type Props = {
 
 export default function BoardContainer(props: Props) {
   const [todoLists, setTodoLists] = useState(props.todoLists);
+  const writer = useRepositoryWriter();
 
   const addTodoList = (name: string) => {
-    setTodoLists([...todoLists, TodoList.create(name, [])]);
+    const newTodoList = TodoList.create(name, []);
+    setTodoLists([...todoLists, newTodoList]);
+    writer.storeTodoList(newTodoList);
   };
 
   return (
