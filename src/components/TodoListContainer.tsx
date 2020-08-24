@@ -20,7 +20,7 @@ export default function TodoListContainer(props: Props) {
             <h1>{props.list.name}</h1>
           </div>
           <TodosProvider writer={writer} todoList={props.list}>
-            <InputTodo />
+            <InputTodo todoListId={props.list.id} />
             <OpenTodoList />
             <ClosedTodoList />
           </TodosProvider>
