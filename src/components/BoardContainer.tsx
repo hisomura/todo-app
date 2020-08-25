@@ -18,10 +18,15 @@ export default function BoardContainer(props: Props) {
     writer.storeTodoList(newTodoList);
   };
 
+  const deleteTodoList = (list: TodoList) => {
+    setTodoLists(todoLists.filter((l) => l.id !== list.id));
+    writer.deleteTodoList(list.id);
+  };
+
   return (
     <div className="flex">
       {todoLists.map((list) => {
-        return <TodoListContainer key={list.id} list={list} />;
+        return <TodoListContainer key={list.id} list={list} onDelete={deleteTodoList} />;
       })}
       <NewTodoList addNewTodoList={addTodoList} />
     </div>

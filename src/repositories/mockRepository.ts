@@ -17,6 +17,8 @@ class MockRepositoryWriter implements RepositoryWriter {
     };
   }
 
+  deleteTodoList(_listId: string) {}
+
   storeTodos(listId: string, todos: Todo[]) {
     this.updateTodoList(listId, { todos });
   }

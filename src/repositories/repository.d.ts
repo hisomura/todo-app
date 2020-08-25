@@ -5,6 +5,8 @@ export interface RepositoryWriter {
 
   updateTodoList(listId: string, props: Partial<TodoList>): void;
 
+  deleteTodoList(listId: string): void;
+
   storeTodos(listId: string, todos: Todo[]): void;
 }
 

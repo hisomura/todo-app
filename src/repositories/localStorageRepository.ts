@@ -31,6 +31,8 @@ class LocalStorageRepositoryWriter implements RepositoryWriter {
     this.saveToLocalStorage();
   }
 
+  deleteTodoList(_listId: string) {}
+
   storeTodos(listId: string, todos: Todo[]) {
     this.updateTodoList(listId, { todos });
   }
