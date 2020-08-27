@@ -64,6 +64,15 @@ describe("LocalStorageRepositoryWriter ", () => {
     expect(first.todos[1].name).toBe("Todo2");
     expect(first.todos[2].name).toBe("Todo1");
   });
+
+  test("deletes a todo list", () => {
+    const { writer, reader } = getLocalStorageRepository();
+    const todoList = TodoList.create("TodoList1", [Todo.create("Todo1"), Todo.create("Todo2")]);
+    writer.storeTodoList(todoList)
+    expect(reader.getTodoLists().length).toEqual(1)
+    writer.deleteTodoList(todoList.id);
+    expect(reader.getTodoLists().length).toEqual(0)
+  });
 });
 
 describe("LocalStorageRepositoryReader ", () => {

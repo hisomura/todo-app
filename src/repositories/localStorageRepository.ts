@@ -31,10 +31,13 @@ class LocalStorageRepositoryWriter implements RepositoryWriter {
     this.saveToLocalStorage();
   }
 
-  deleteTodoList(_listId: string) {}
-
   storeTodos(listId: string, todos: Todo[]) {
     this.updateTodoList(listId, { todos });
+  }
+
+  deleteTodoList(listId: string) {
+    this.todoLists = this.todoLists.filter((l) => l.id !== listId);
+    this.saveToLocalStorage();
   }
 
   clearAll() {
@@ -44,16 +47,10 @@ class LocalStorageRepositoryWriter implements RepositoryWriter {
 }
 
 class LocalStorageRepositoryReader implements RepositoryReader {
-  readonly todoLists: TodoList[] = [];
-
-  constructor() {
+  getTodoLists(): TodoList[] {
     const serialized = localStorage?.getItem(STORAGE_KEY);
     const unSerialized = serialized && JSON.parse(serialized);
-    this.todoLists = unSerialized ? unSerialized[0].todoLists : [];
-  }
-
-  getTodoLists(): TodoList[] {
-    return this.todoLists;
+    return unSerialized ? unSerialized[0].todoLists : [];
   }
 }
 
