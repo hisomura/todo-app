@@ -36,6 +36,11 @@ class LocalStorageRepositoryWriter implements RepositoryWriter {
   storeTodos(listId: string, todos: Todo[]) {
     this.updateTodoList(listId, { todos });
   }
+
+  clearAll() {
+    this.todoLists = [];
+    this.saveToLocalStorage();
+  }
 }
 
 class LocalStorageRepositoryReader implements RepositoryReader {

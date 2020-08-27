@@ -23,9 +23,13 @@ export default function TodoListContainer(props: Props) {
         <div className="w-64 shadow-xl rounded px-4 pb-4">
           <div className="pt-4 flex justify-between">
             <h1>{props.list.name}</h1>
-            <span className="my-auto" onClick={() => setDeleteModalOpen(true)}>
+            <button
+              className="my-auto focus:outline-none"
+              onClick={() => setDeleteModalOpen(true)}
+              data-testid="open-delete-todo-list-modal"
+            >
               <MdClose />
-            </span>
+            </button>
           </div>
           <TodosProvider writer={writer} todoList={props.list}>
             <InputTodo todoListId={props.list.id} />

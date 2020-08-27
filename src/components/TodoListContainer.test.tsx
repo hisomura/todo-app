@@ -12,7 +12,7 @@ describe("TodoListContainer.tsx", () => {
     const { writer } = getMockRepository([todoList]);
     render(
       <RepositoryWriterProvider writer={writer}>
-        <TodoListContainer list={todoList} />;
+        <TodoListContainer list={todoList} onDelete={() => {}}/>;
       </RepositoryWriterProvider>
     );
 
@@ -50,7 +50,7 @@ describe("TodoListContainer.tsx", () => {
     const { writer } = getMockRepository([todoList]);
     render(
       <RepositoryWriterProvider writer={writer}>
-        <TodoListContainer list={todoList} />;
+        <TodoListContainer list={todoList} onDelete={() => {}}/>;
       </RepositoryWriterProvider>
     );
 
