@@ -5,15 +5,18 @@ import TodoListContainer from "./TodoListContainer";
 import { Todo, TodoList } from "../lib/todo";
 import { RepositoryWriterProvider } from "../repositories/ReposiotryProvider";
 import { getMockRepository } from "../repositories/mockRepository";
+import { ModalProvider } from "./common/Modal";
 
 describe("TodoListContainer.tsx", () => {
   test("adds and closes a todo, then expands closed todo list, then reopens a todo", async () => {
     const todoList = TodoList.create("TodoList1", []);
     const { writer } = getMockRepository([todoList]);
     render(
-      <RepositoryWriterProvider writer={writer}>
-        <TodoListContainer list={todoList} onDelete={() => {}}/>;
-      </RepositoryWriterProvider>
+      <ModalProvider>
+        <RepositoryWriterProvider writer={writer}>
+          <TodoListContainer list={todoList} onDelete={() => {}} />;
+        </RepositoryWriterProvider>
+      </ModalProvider>
     );
 
     // Add a todo
@@ -49,9 +52,11 @@ describe("TodoListContainer.tsx", () => {
     ]);
     const { writer } = getMockRepository([todoList]);
     render(
-      <RepositoryWriterProvider writer={writer}>
-        <TodoListContainer list={todoList} onDelete={() => {}}/>;
-      </RepositoryWriterProvider>
+      <ModalProvider>
+        <RepositoryWriterProvider writer={writer}>
+          <TodoListContainer list={todoList} onDelete={() => {}} />;
+        </RepositoryWriterProvider>
+      </ModalProvider>
     );
 
     // Make sure closed todos exist.

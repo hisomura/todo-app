@@ -1,14 +1,36 @@
 import ToggleFoldingButton from "../buttons/ToggleFoldingButton";
 import ClosedTodoItem from "./ClosedTodoItem";
-import React, { useReducer, useState } from "react";
+import React, { useReducer } from "react";
 import { useTodosHook } from "../../lib/todosHook";
-import ClearAllModal from "./ClearAllModal";
 import { MdClearAll } from "react-icons/md";
+import { useModal } from "../common/Modal";
+
+function openClearAllClosedTodosModal() {
+  const { clearAllClosedTodos } = useTodosHook();
+  const { open, close } = useModal();
+  const onClear = () => {
+    clearAllClosedTodos();
+    close();
+  };
+  const modal = (
+    <>
+      <div className="mb-6">Are you sure you want to clear all closed todos?</div>
+      <div className="flex justify-center">
+        <button onClick={onClear} type="button" className="rounded border px-4 py-2 mx-2">
+          Clear
+        </button>
+        <button onClick={close} type="button" className="rounded border px-4 py-2 mx-2">
+          Cancel
+        </button>
+      </div>
+    </>
+  );
+  return () => open(modal);
+}
 
 export default function ClosedTodoList() {
-  const { closedTodos, clearAllClosedTodos } = useTodosHook();
+  const { closedTodos } = useTodosHook();
   const [foldingClosedTodos, toggleFoldingClosedTodos] = useReducer((state: boolean) => !state, true);
-  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <>
@@ -18,7 +40,7 @@ export default function ClosedTodoList() {
           <div
             className="ml-auto mr-2"
             hidden={foldingClosedTodos || closedTodos.length === 0}
-            onClick={() => setModalOpen(true)}
+            onClick={openClearAllClosedTodosModal()}
             data-testid="clear-all-closed-todos"
           >
             <MdClearAll />
@@ -31,7 +53,6 @@ export default function ClosedTodoList() {
           ))}
         </ul>
       </div>
-      <ClearAllModal open={modalOpen} onClear={clearAllClosedTodos} onClose={() => setModalOpen(false)} />
     </>
   );
 }

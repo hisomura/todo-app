@@ -1,20 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 
-type Props = {
-  open: boolean;
-  onClose: () => void;
-  children: any;
+type ModalAccessor = {
+  open: (children: any) => void;
+  close: () => void;
 };
 
-export default function Modal(props: Props) {
+const ModalContext = React.createContext<undefined | ModalAccessor>(undefined);
+
+function useModal() {
+  const context = React.useContext(ModalContext);
+  if (context === undefined) {
+    throw new Error("useModal() must be used within a ModalProvider");
+  }
+
+  return context;
+}
+
+function ModalProvider(props: { children: any }) {
+  const [state, setState] = useState({
+    open: false,
+    children: null,
+  });
+
+  const open = (children: any) => setState({ open: true, children });
+  const close = () => setState({ open: false, children: null });
+
   return (
-    <div hidden={!props.open} className="fixed z-10 inset-0">
-      <div className="relative w-full h-full grid justify-center content-center">
-        <div onClick={props.onClose} className="absolute w-full h-full z-0 bg-gray-500 opacity-75" />
-        <div hidden={!props.open} className="z-10 w-auto h-auto shadow-xl max-w-md bg-white rounded px-6 py-6">
-          {props.children}
+    <>
+      <ModalContext.Provider value={{ open, close }}>{props.children}</ModalContext.Provider>
+      <div hidden={!state.open} className="fixed z-10 inset-0">
+        <div className="relative w-full h-full grid justify-center content-center">
+          <div onClick={close} className="absolute w-full h-full z-0 bg-gray-500 opacity-75" />
+          <div className="z-10 w-auto h-auto shadow-xl max-w-md bg-white rounded px-6 py-6">{state.children}</div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
+
+export { ModalProvider, useModal };

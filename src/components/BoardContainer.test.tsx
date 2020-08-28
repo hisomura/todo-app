@@ -5,6 +5,7 @@ import { RepositoryWriterProvider } from "../repositories/ReposiotryProvider";
 import BoardContainer from "./BoardContainer";
 import { getLocalStorageRepository } from "../repositories/localStorageRepository";
 import userEvent from "@testing-library/user-event";
+import { ModalProvider } from "./common/Modal";
 
 describe("BoardContainer.tsx", () => {
   function setInitialLocalStorageData(todoLists: TodoList[]) {
@@ -15,16 +16,18 @@ describe("BoardContainer.tsx", () => {
   beforeEach(() => {
     const { writer } = getLocalStorageRepository();
     writer.clearAll();
-  })
+  });
 
   test("shows todo list title and its todo title.", async () => {
     const todoList = TodoList.create("TodoList1", [Todo.create("Foobar")]);
     setInitialLocalStorageData([todoList]);
     const { reader, writer } = getLocalStorageRepository();
     render(
-      <RepositoryWriterProvider writer={writer}>
-        <BoardContainer todoLists={reader.getTodoLists()} />
-      </RepositoryWriterProvider>
+      <ModalProvider>
+        <RepositoryWriterProvider writer={writer}>
+          <BoardContainer todoLists={reader.getTodoLists()} />
+        </RepositoryWriterProvider>
+      </ModalProvider>
     );
 
     // Add a todo
@@ -38,9 +41,11 @@ describe("BoardContainer.tsx", () => {
     setInitialLocalStorageData([todoList]);
     const { reader, writer } = getLocalStorageRepository();
     render(
-      <RepositoryWriterProvider writer={writer}>
-        <BoardContainer todoLists={reader.getTodoLists()} />
-      </RepositoryWriterProvider>
+      <ModalProvider>
+        <RepositoryWriterProvider writer={writer}>
+          <BoardContainer todoLists={reader.getTodoLists()} />
+        </RepositoryWriterProvider>
+      </ModalProvider>
     );
 
     expect(screen.queryByText(/NewTodoList/)).not.toBeInTheDocument();
@@ -54,9 +59,11 @@ describe("BoardContainer.tsx", () => {
     setInitialLocalStorageData([todoList]);
     const { reader, writer } = getLocalStorageRepository();
     render(
-      <RepositoryWriterProvider writer={writer}>
-        <BoardContainer todoLists={reader.getTodoLists()} />
-      </RepositoryWriterProvider>
+      <ModalProvider>
+        <RepositoryWriterProvider writer={writer}>
+          <BoardContainer todoLists={reader.getTodoLists()} />
+        </RepositoryWriterProvider>
+      </ModalProvider>
     );
 
     screen.getAllByText(/TodoList1/);
