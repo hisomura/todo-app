@@ -6,6 +6,7 @@ import { Todo, TodoList } from "../lib/todo";
 import { RepositoryWriterProvider } from "../repositories/ReposiotryProvider";
 import { getMockRepository } from "../repositories/mockRepository";
 import { ModalProvider } from "./common/Modal";
+import { DraggedDataProvider } from "./common/DraggedData";
 
 describe("TodoListContainer.tsx", () => {
   test("adds and closes a todo, then expands closed todo list, then reopens a todo", async () => {
@@ -13,9 +14,11 @@ describe("TodoListContainer.tsx", () => {
     const { writer } = getMockRepository([todoList]);
     render(
       <ModalProvider>
-        <RepositoryWriterProvider writer={writer}>
-          <TodoListContainer list={todoList} onDelete={() => {}} />;
-        </RepositoryWriterProvider>
+        <DraggedDataProvider>
+          <RepositoryWriterProvider writer={writer}>
+            <TodoListContainer list={todoList} onDelete={() => {}} />;
+          </RepositoryWriterProvider>
+        </DraggedDataProvider>
       </ModalProvider>
     );
 
@@ -53,9 +56,11 @@ describe("TodoListContainer.tsx", () => {
     const { writer } = getMockRepository([todoList]);
     render(
       <ModalProvider>
-        <RepositoryWriterProvider writer={writer}>
-          <TodoListContainer list={todoList} onDelete={() => {}} />;
-        </RepositoryWriterProvider>
+        <DraggedDataProvider>
+          <RepositoryWriterProvider writer={writer}>
+            <TodoListContainer list={todoList} onDelete={() => {}} />;
+          </RepositoryWriterProvider>
+        </DraggedDataProvider>
       </ModalProvider>
     );
 

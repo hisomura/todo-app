@@ -6,6 +6,7 @@ import BoardContainer from "./BoardContainer";
 import { getLocalStorageRepository } from "../repositories/localStorageRepository";
 import userEvent from "@testing-library/user-event";
 import { ModalProvider } from "./common/Modal";
+import { DraggedDataProvider } from "./common/DraggedData";
 
 describe("BoardContainer.tsx", () => {
   function setInitialLocalStorageData(todoLists: TodoList[]) {
@@ -24,9 +25,11 @@ describe("BoardContainer.tsx", () => {
     const { reader, writer } = getLocalStorageRepository();
     render(
       <ModalProvider>
-        <RepositoryWriterProvider writer={writer}>
-          <BoardContainer todoLists={reader.getTodoLists()} />
-        </RepositoryWriterProvider>
+        <DraggedDataProvider>
+          <RepositoryWriterProvider writer={writer}>
+            <BoardContainer todoLists={reader.getTodoLists()} />
+          </RepositoryWriterProvider>
+        </DraggedDataProvider>
       </ModalProvider>
     );
 
@@ -42,9 +45,11 @@ describe("BoardContainer.tsx", () => {
     const { reader, writer } = getLocalStorageRepository();
     render(
       <ModalProvider>
-        <RepositoryWriterProvider writer={writer}>
-          <BoardContainer todoLists={reader.getTodoLists()} />
-        </RepositoryWriterProvider>
+        <DraggedDataProvider>
+          <RepositoryWriterProvider writer={writer}>
+            <BoardContainer todoLists={reader.getTodoLists()} />
+          </RepositoryWriterProvider>
+        </DraggedDataProvider>
       </ModalProvider>
     );
 
@@ -60,9 +65,11 @@ describe("BoardContainer.tsx", () => {
     const { reader, writer } = getLocalStorageRepository();
     render(
       <ModalProvider>
-        <RepositoryWriterProvider writer={writer}>
-          <BoardContainer todoLists={reader.getTodoLists()} />
-        </RepositoryWriterProvider>
+        <DraggedDataProvider>
+          <RepositoryWriterProvider writer={writer}>
+            <BoardContainer todoLists={reader.getTodoLists()} />
+          </RepositoryWriterProvider>
+        </DraggedDataProvider>
       </ModalProvider>
     );
 

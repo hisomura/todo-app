@@ -6,6 +6,7 @@ import { RepositoryReader, RepositoryWriter } from "../repositories/repository";
 import BoardContainer from "../components/BoardContainer";
 import { getLocalStorageRepository } from "../repositories/localStorageRepository";
 import { ModalProvider } from "../components/common/Modal";
+import { DraggedDataProvider } from "../components/common/DraggedData";
 
 type ApplicationState = {
   userId: string | null;
@@ -64,16 +65,18 @@ export default function Home() {
 
   return (
     <ModalProvider>
-      <div className="max-w-xl mx-auto pt-8 z-0 flex justify-end">
-        {state.userId ? (
-          <LoginButton onclick={logout} message="Logout" />
-        ) : (
-          <LoginButton onclick={login} message="Login with Github" />
-        )}
-      </div>
-      <RepositoryWriterProvider writer={state.repository.writer}>
-        <BoardContainer todoLists={state.repository.reader.getTodoLists()} />
-      </RepositoryWriterProvider>
+      <DraggedDataProvider>
+        <div className="max-w-xl mx-auto pt-8 z-0 flex justify-end">
+          {state.userId ? (
+            <LoginButton onclick={logout} message="Logout" />
+          ) : (
+            <LoginButton onclick={login} message="Login with Github" />
+          )}
+        </div>
+        <RepositoryWriterProvider writer={state.repository.writer}>
+          <BoardContainer todoLists={state.repository.reader.getTodoLists()} />
+        </RepositoryWriterProvider>
+      </DraggedDataProvider>
     </ModalProvider>
   );
 }
