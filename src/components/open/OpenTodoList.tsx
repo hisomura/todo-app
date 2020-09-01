@@ -1,7 +1,6 @@
 import OpenTodoItem from "./OpenTodoItem";
 import React, { DragEventHandler } from "react";
 import { useTodosHook } from "../../lib/todosHook";
-import { useDraggedData } from "../common/DraggedData";
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault();
 
@@ -11,7 +10,6 @@ function inRect(rect: DOMRect, clientX: number, clientY: number) {
 
 export default function OpenTodoList() {
   const { openTodos, dropTargetIndex, setDropTargetIndex, moveTodo } = useTodosHook();
-  const draggedDataRef = useDraggedData();
 
   return (
     <div
@@ -20,18 +18,14 @@ export default function OpenTodoList() {
       onDragLeave={(e) => {
         const rect = (e.target as HTMLDivElement).getBoundingClientRect();
         if (inRect(rect, e.clientX, e.clientY)) return;
-        // FIXME
         setDropTargetIndex(null);
       }}
       onDrop={(e) => {
         e.stopPropagation();
         e.preventDefault();
-        console.log(draggedDataRef.current);
-        console.log(draggedDataRef);
-        if (draggedDataRef.current?.type === "todo") {
-          moveTodo(draggedDataRef.current.todo);
-          draggedDataRef.current = null;
-        }
+        const todoId = e.dataTransfer?.getData("todo-id");
+        const todo = openTodos.find((t) => t.id === todoId);
+        if (todo) moveTodo(todo);
       }}
     >
       <ul>
