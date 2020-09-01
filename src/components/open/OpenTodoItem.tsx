@@ -1,6 +1,7 @@
 import React, { DragEventHandler } from "react";
 import { Todo } from "../../lib/todo";
 import { useTodosHook } from "../../lib/todosHook";
+import { setDraggedData } from "../../lib/draggedData";
 
 type Props = {
   key: string;
@@ -12,6 +13,7 @@ export default function OpenTodoItem(props: Props) {
   const { dropTargetIndex, closeTodo, setDropTargetIndex } = useTodosHook();
   const className = "flex py-2 " + (props.index === dropTargetIndex ? "border-t-2 border-blue-500" : "border-t");
   const onDragStart: DragEventHandler = (e) => {
+    setDraggedData({ type: "todo", todo: props.todo });
     e.dataTransfer!.setData("todo-id", props.todo.id);
     e.dataTransfer!.effectAllowed = "move";
   };

@@ -1,6 +1,7 @@
 import OpenTodoItem from "./OpenTodoItem";
 import React, { DragEventHandler } from "react";
 import { useTodosHook } from "../../lib/todosHook";
+import {getDraggedData, setDraggedData} from "../../lib/draggedData";
 
 const preventDefault: DragEventHandler = (event) => event.preventDefault();
 
@@ -23,9 +24,11 @@ export default function OpenTodoList() {
       onDrop={(e) => {
         e.stopPropagation();
         e.preventDefault();
-        const todoId = e.dataTransfer?.getData("todo-id");
-        const todo = openTodos.find((t) => t.id === todoId);
-        if (todo) moveTodo(todo);
+        const draggedData = getDraggedData()
+        if (draggedData?.type === "todo") {
+          moveTodo(draggedData.todo);
+          setDraggedData(null)
+        }
       }}
     >
       <ul>
