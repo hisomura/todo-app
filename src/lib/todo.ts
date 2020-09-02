@@ -21,17 +21,22 @@ export const TodoList = {
   create: (name: string, todos: Todo[]): TodoList => ({ id: uuidV4(), name, todos }),
 };
 
-// class TodoList {
-//   constructor(readonly id: string, protected _name: string, protected _todos: Todo[]) {
-//   }
-//
-//   get openTodos() {
-//     return this._todos.filter((t) => !t.closed);
-//   }
-//
-//   get closedTodos() {
-//     return this._todos.filter((t) => t.closed);
-//   }
-//
-//
-// }
+export const moveTodoToAnotherList = (todo: Todo, todoLists: TodoList[], fromList: TodoList, toList: TodoList) => {
+  return todoLists.reduce<TodoList[]>((acc, current) => {
+    if (current.id === fromList.id) {
+      acc.push({
+        ...fromList,
+        todos: fromList.todos.filter((t) => t.id !== todo.id),
+      });
+    } else if (current.id === toList.id) {
+      acc.push({
+        ...toList,
+        todos: [...toList.todos, todo],
+      });
+    } else {
+      acc.push(current);
+    }
+
+    return acc;
+  }, []);
+};
