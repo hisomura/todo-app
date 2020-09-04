@@ -4,5 +4,7 @@ module.exports = {
     "./src/pages/**/*.tsx",
     "./src/components/**/*.tsx",
   ],
-  // ...
+  future: {
+    removeDeprecatedGapUtilities: true,
+  },
 };
