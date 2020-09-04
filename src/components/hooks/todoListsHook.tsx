@@ -2,22 +2,20 @@ import React, { useState } from "react";
 import { moveTodoToAnotherList, Todo, TodoList } from "../../lib/todo";
 import { RepositoryWriter } from "../../repositories/repository";
 
-const TodoStateContext = React.createContext<undefined | ReturnType<typeof useTodoLists>>(undefined);
+type TodoListsHooks = ReturnType<typeof useTodoLists>;
+const TodoListsContext = React.createContext<undefined | TodoListsHooks>(undefined);
 
 type Props = {
   children: any;
-  writer: RepositoryWriter;
-  todoLists: TodoList[];
+  todoListsHooks: TodoListsHooks;
 };
 
-function TodoListsProvider({ children, writer, todoLists }: Props) {
-  const todos = useTodoLists(writer, todoLists);
-
-  return <TodoStateContext.Provider value={todos}>{children}</TodoStateContext.Provider>;
+function TodoListsContextProvider({ children, todoListsHooks }: Props) {
+  return <TodoListsContext.Provider value={todoListsHooks}>{children}</TodoListsContext.Provider>;
 }
 
 function useTodoListsContext() {
-  const context = React.useContext(TodoStateContext);
+  const context = React.useContext(TodoListsContext);
   if (context === undefined) {
     throw new Error("useTodoListFromContext must be used within a TodoListProvider");
   }
@@ -44,4 +42,4 @@ function useTodoLists(writer: RepositoryWriter, initialTodoLists: TodoList[]) {
   return { todoLists, addTodoList, deleteTodoList, moveTodo };
 }
 
-export { TodoListsProvider, useTodoListsContext, useTodoLists };
+export { TodoListsContextProvider, useTodoListsContext, useTodoLists };
