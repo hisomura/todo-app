@@ -1,18 +1,19 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import cn from "classnames";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
-import { MouseEventHandler } from "react";
 
 type Props = {
   folding: boolean;
   onClick: MouseEventHandler<HTMLDivElement>;
 };
 
-export default function ToggleFoldingButton(props: Props) {
+const ToggleFoldingButton = React.memo((props: Props) => {
   return (
     <div onClick={props.onClick} data-testid="toggle-folding-closed-todos-button">
       <MdExpandLess className={cn({ hidden: props.folding })} />
       <MdExpandMore className={cn({ hidden: !props.folding })} />
     </div>
   );
-}
+});
+
+export default ToggleFoldingButton;
