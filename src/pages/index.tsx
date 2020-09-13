@@ -6,6 +6,8 @@ import { RepositoryReader, RepositoryWriter } from "../repositories/repository";
 import BoardContainer from "../components/BoardContainer";
 import { getLocalStorageRepository } from "../repositories/localStorageRepository";
 import { ModalProvider } from "../components/common/Modal";
+import { increment, selectCount } from "../store/counterSlice";
+import {useDispatch, useSelector} from "react-redux";
 
 type ApplicationState = {
   userId: string | null;
@@ -30,6 +32,8 @@ function useApplicationState() {
 
 export default function Home() {
   const [state, updateState] = useApplicationState();
+  const count = useSelector(selectCount);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const repository = getLocalStorageRepository();
@@ -71,6 +75,9 @@ export default function Home() {
           <LoginButton onclick={login} message="Login with Github" />
         )}
       </div>
+      <button aria-label="Increment value" onClick={() => dispatch(increment())}>
+        + {count}
+      </button>
       <RepositoryWriterProvider writer={state.repository.writer}>
         <BoardContainer todoLists={state.repository.reader.getTodoLists()} />
       </RepositoryWriterProvider>
