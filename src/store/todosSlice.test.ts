@@ -17,8 +17,17 @@ describe("todosSlice", () => {
       { listId: "list-id-1", id: "id-2", name: "foobar2", closed: false, order: 2 },
       { listId: "list-id-1", id: "id-3", name: "foobar3", closed: true, order: 3 },
     ];
-    const nextTodos = todos(prevTodos, { type: deleteTodo.type, payload: { id: "id-2" } });
-
+    const nextTodos = todos(prevTodos, { type: deleteTodo.type, payload: { ids: ["id-2"] } });
     expect(nextTodos.length).toBe(2);
+  });
+
+  test("deleteTodo deletes todos.", () => {
+    const prevTodos = [
+      { listId: "list-id-1", id: "id-1", name: "foobar1", closed: false, order: 1 },
+      { listId: "list-id-1", id: "id-2", name: "foobar2", closed: false, order: 2 },
+      { listId: "list-id-1", id: "id-3", name: "foobar3", closed: true, order: 3 },
+    ];
+    const nextTodos = todos(prevTodos, { type: deleteTodo.type, payload: { ids: ["id-1", "id-2", "id-3"] } });
+    expect(nextTodos.length).toBe(0);
   });
 });

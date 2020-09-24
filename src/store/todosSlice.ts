@@ -22,8 +22,8 @@ export const todosSlice = createSlice({
         order: 3,
       });
     },
-    deleteTodo: (todos, action: { payload: { id: string } }) => {
-      return todos.filter((t) => t.id !== action.payload.id);
+    deleteTodo: (todos, action: { payload: { ids: string[] } }) => {
+      return todos.filter((t) => !action.payload.ids.includes(t.id));
     },
   },
 });
