@@ -22,13 +22,23 @@ export const todosSlice = createSlice({
         order: 3,
       });
     },
-    deleteTodo: (todos, action: { payload: { ids: string[] } }) => {
+    deleteTodos: (todos, action: { payload: { ids: string[] } }) => {
       return todos.filter((t) => !action.payload.ids.includes(t.id));
+    },
+    closeTodos: (todos, action: { payload: { ids: string[] } }) => {
+      return todos.map(t => {
+        return action.payload.ids.includes(t.id) ? {...t, closed: true} : t
+      })
+    },
+    openTodos: (todos, action: { payload: { ids: string[] } }) => {
+      return todos.map(t => {
+        return action.payload.ids.includes(t.id) ? {...t, closed: false} : t
+      })
     },
   },
 });
 
-export const { addTodo, deleteTodo } = todosSlice.actions;
+export const { addTodo, deleteTodos, closeTodos, openTodos } = todosSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
