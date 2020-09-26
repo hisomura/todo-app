@@ -1,12 +1,12 @@
-import todos, { addTodo, deleteTodos, closeTodos, openTodos } from "./todosSlice";
+import todos, { addTodo, closeTodos, deleteTodos, openTodos, Todo } from "./todosSlice";
 
 describe("todosSlice", () => {
-  const prevTodos = [
+  const prevTodos: Todo[] = [
     { listId: "list-id-1", id: "id-1", name: "foobar1", closed: false, order: 1 },
     { listId: "list-id-1", id: "id-2", name: "foobar2", closed: false, order: 2 },
-    { listId: "list-id-1", id: "id-3", name: "foobar3", closed: true, order: 3 },
-    { listId: "list-id-1", id: "id-4", name: "foobar4", closed: true, order: 4 },
-  ]
+    { listId: "list-id-1", id: "id-3", name: "foobar3", closed: true },
+    { listId: "list-id-1", id: "id-4", name: "foobar4", closed: true },
+  ];
 
   test("addTodo adds a new todo.", () => {
     const nextTodos = todos([], {
@@ -30,11 +30,12 @@ describe("todosSlice", () => {
 
   test("closeTodos closes todos.", () => {
     const nextTodos = todos(prevTodos, { type: closeTodos.type, payload: { ids: ["id-1", "id-2"] } });
-    expect(nextTodos.filter(t => t.closed).length).toBe(4);
+    expect(nextTodos.filter((t) => t.closed).length).toBe(4);
   });
 
   test("openTodos opens todos.", () => {
-    const nextTodos = todos(prevTodos, { type: openTodos.type, payload: { ids: ["id-3", "id-4"] } });
-    expect(nextTodos.filter(t => !t.closed).length).toBe(4);
+    const nextTodos = todos(prevTodos, { type: openTodos.type, payload: { ids: ["id-3"] } });
+    expect(nextTodos.filter((t) => !t.closed).length).toBe(3);
+    expect(nextTodos[2]).toEqual({ listId: "list-id-1", id: "id-3", name: "foobar3", closed: false, order: 3 });
   });
 });

@@ -1,13 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidV4 } from "uuid";
 
-export type Todo = {
+type OpenTodo = {
   listId: string;
   id: string;
   name: string;
-  closed: boolean;
+  closed: false;
   order: number;
 };
+
+type ClosedTodo = {
+  listId: string;
+  id: string;
+  name: string;
+  closed: true;
+};
+
+export type Todo = OpenTodo | ClosedTodo;
 
 export const todosSlice = createSlice({
   name: "todos",
@@ -26,14 +35,37 @@ export const todosSlice = createSlice({
       return todos.filter((t) => !action.payload.ids.includes(t.id));
     },
     closeTodos: (todos, action: { payload: { ids: string[] } }) => {
-      return todos.map(t => {
-        return action.payload.ids.includes(t.id) ? {...t, closed: true} : t
-      })
+      return todos.map((t) => {
+        return action.payload.ids.includes(t.id) ? { ...t, closed: true } : t;
+      });
     },
     openTodos: (todos, action: { payload: { ids: string[] } }) => {
-      return todos.map(t => {
-        return action.payload.ids.includes(t.id) ? {...t, closed: false} : t
-      })
+      const openTodosMap = new Map<string, Todo[]>();
+      todos.forEach((t) => {
+        if (t.closed) return;
+        if (openTodosMap.has(t.listId)) {
+          openTodosMap.get(t.listId)!.push(t);
+        } else {
+          openTodosMap.set(t.listId, [t]);
+        }
+      });
+
+      return todos.map((t) => {
+        if (!t.closed || !action.payload.ids.includes(t.id)) return t;
+
+        // FIXME remove duplication
+        if (openTodosMap.has(t.listId)) {
+          openTodosMap.get(t.listId)!.push(t);
+        } else {
+          openTodosMap.set(t.listId, [t]);
+        }
+
+        return {
+          ...t,
+          closed: false,
+          order: openTodosMap.get(t.listId)!.length,
+        };
+      });
     },
   },
 });
