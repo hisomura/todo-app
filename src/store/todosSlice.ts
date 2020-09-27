@@ -18,6 +18,14 @@ type ClosedTodo = {
 
 export type Todo = OpenTodo | ClosedTodo;
 
+function pushTodoToMap(map: Map<string, Todo[]>, todo: Todo) {
+  if (map.has(todo.listId)) {
+    map.get(todo.listId)!.push(todo);
+  } else {
+    map.set(todo.listId, [todo]);
+  }
+}
+
 export const todosSlice = createSlice({
   name: "todos",
   initialState: [] as Todo[],
@@ -43,22 +51,12 @@ export const todosSlice = createSlice({
       const openTodosMap = new Map<string, Todo[]>();
       todos.forEach((t) => {
         if (t.closed) return;
-        if (openTodosMap.has(t.listId)) {
-          openTodosMap.get(t.listId)!.push(t);
-        } else {
-          openTodosMap.set(t.listId, [t]);
-        }
+        pushTodoToMap(openTodosMap, t);
       });
 
       return todos.map((t) => {
         if (!t.closed || !action.payload.ids.includes(t.id)) return t;
-
-        // FIXME remove duplication
-        if (openTodosMap.has(t.listId)) {
-          openTodosMap.get(t.listId)!.push(t);
-        } else {
-          openTodosMap.set(t.listId, [t]);
-        }
+        pushTodoToMap(openTodosMap, t);
 
         return {
           ...t,
