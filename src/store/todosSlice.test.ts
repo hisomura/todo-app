@@ -1,4 +1,4 @@
-import todos, { addTodo, closeTodos, deleteTodos, openTodos, Todo } from "./todosSlice";
+import todos, { addTodo, closeTodos, deleteTodos, openTodos, moveTodos, Todo } from "./todosSlice";
 
 describe("todosSlice", () => {
   const prevTodos: Todo[] = [
@@ -37,5 +37,19 @@ describe("todosSlice", () => {
     const nextTodos = todos(prevTodos, { type: openTodos.type, payload: { ids: ["id-3"] } });
     expect(nextTodos.filter((t) => !t.closed).length).toBe(3);
     expect(nextTodos[2]).toEqual({ listId: "list-id-1", id: "id-3", name: "foobar3", closed: false, order: 3 });
+  });
+
+
+  test("moveTodos moves todos.", () => {
+    const nextTodos = todos(prevTodos, {
+      type: moveTodos.type,
+      payload: { targetIds: ["id-1", "id-3"], fromListId: 'list-id-1', toListId: "new-list-id1" },
+    });
+    expect(nextTodos).toEqual([
+      { listId: "new-list-id1", id: "id-1", name: "foobar1", closed: false, order: 1 },
+      { listId: "list-id-1", id: "id-2", name: "foobar2", closed: false, order: 1 },
+      { listId: "new-list-id1", id: "id-3", name: "foobar3", closed: true, order: 2 },
+      { listId: "list-id-1", id: "id-4", name: "foobar4", closed: true, order: 2 },
+    ]);
   });
 });
