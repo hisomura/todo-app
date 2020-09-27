@@ -4,8 +4,8 @@ describe("todosSlice", () => {
   const prevTodos: Todo[] = [
     { listId: "list-id-1", id: "id-1", name: "foobar1", closed: false, order: 1 },
     { listId: "list-id-1", id: "id-2", name: "foobar2", closed: false, order: 2 },
-    { listId: "list-id-1", id: "id-3", name: "foobar3", closed: true },
-    { listId: "list-id-1", id: "id-4", name: "foobar4", closed: true },
+    { listId: "list-id-1", id: "id-3", name: "foobar3", closed: true, order: 3 },
+    { listId: "list-id-1", id: "id-4", name: "foobar4", closed: true, order: 4 },
   ];
 
   test("addTodo adds a new todo.", () => {

@@ -1,30 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidV4 } from "uuid";
 
-type OpenTodo = {
+export type Todo = {
   listId: string;
   id: string;
   name: string;
-  closed: false;
+  closed: boolean;
   order: number;
 };
-
-type ClosedTodo = {
-  listId: string;
-  id: string;
-  name: string;
-  closed: true;
-};
-
-export type Todo = OpenTodo | ClosedTodo;
-
-function pushTodoToMap(map: Map<string, Todo[]>, todo: Todo) {
-  if (map.has(todo.listId)) {
-    map.get(todo.listId)!.push(todo);
-  } else {
-    map.set(todo.listId, [todo]);
-  }
-}
 
 export const todosSlice = createSlice({
   name: "todos",
@@ -48,21 +31,8 @@ export const todosSlice = createSlice({
       });
     },
     openTodos: (todos, action: { payload: { ids: string[] } }) => {
-      const openTodosMap = new Map<string, Todo[]>();
-      todos.forEach((t) => {
-        if (t.closed) return;
-        pushTodoToMap(openTodosMap, t);
-      });
-
       return todos.map((t) => {
-        if (!t.closed || !action.payload.ids.includes(t.id)) return t;
-        pushTodoToMap(openTodosMap, t);
-
-        return {
-          ...t,
-          closed: false,
-          order: openTodosMap.get(t.listId)!.length,
-        };
+        return action.payload.ids.includes(t.id) ? { ...t, closed: false } : t;
       });
     },
   },
