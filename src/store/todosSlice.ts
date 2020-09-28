@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidV4 } from "uuid";
+import { WritableDraft } from "immer/dist/types/types-external";
 
 export type Todo = {
   listId: string;
@@ -38,7 +39,19 @@ export const todosSlice = createSlice({
       action: { payload: { targetIds: string[]; fromListId: string; toListId: string; index: number } }
     ) => {
       if (action.payload.fromListId === action.payload.toListId) {
-        // TODO implement
+        const listTodos = todos.filter((t) => t.listId === action.payload.toListId);
+        const newTodos: WritableDraft<Todo>[] = [];
+        const targetTodos: WritableDraft<Todo>[] = [];
+        listTodos.forEach((t) => {
+          if (action.payload.targetIds.includes(t.id)) {
+            targetTodos.push(t);
+          } else {
+            newTodos.push(t);
+          }
+        });
+        newTodos.splice(action.payload.index, 0, ...targetTodos);
+        newTodos.forEach((t, index) => (t.order = index + 1));
+
         return;
       }
       const fromListTodos = todos.filter((t) => t.listId === action.payload.fromListId);
@@ -52,14 +65,12 @@ export const todosSlice = createSlice({
       });
 
       toListTodos.sort((a, b) => a.order - b.order);
-      toListTodos.splice(action.payload.index, 0, ...targetTodos)
+      toListTodos.splice(action.payload.index, 0, ...targetTodos);
       toListTodos.forEach((t, index) => {
-        t.order = index + 1
-        t.listId = action.payload.toListId
-      })
-      fromListTodos.filter(t => t.listId === action.payload.fromListId).forEach((t, index) => {
-        t.order = index + 1
-      })
+        t.order = index + 1;
+        t.listId = action.payload.toListId;
+      });
+      fromListTodos.filter((t) => t.listId === action.payload.fromListId).forEach((t, index) => (t.order = index + 1));
     },
   },
 });
