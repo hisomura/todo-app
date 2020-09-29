@@ -14,13 +14,13 @@ export const todosSlice = createSlice({
   name: "todos",
   initialState: [] as Todo[],
   reducers: {
-    addTodo: (todos, action: { payload: string }) => {
+    addTodo: (todos, action: { payload: { listId: string; name: string } }) => {
       todos.push({
-        listId: uuidV4(),
+        listId: action.payload.listId,
         id: uuidV4(),
-        name: action.payload,
+        name: action.payload.name,
         closed: false,
-        order: 3,
+        order: todos.filter((t) => t.listId === action.payload.listId).length + 1,
       });
     },
     deleteTodos: (todos, action: { payload: { ids: string[] } }) => {
@@ -81,5 +81,6 @@ export const { addTodo, deleteTodos, closeTodos, openTodos, moveTodos } = todosS
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
 export const selectOpenTodos = (todos: Todo[]) => todos.filter((t) => !t.closed);
+export const selectTodos = (state: { todos: Todo[] }) => state.todos;
 
 export default todosSlice.reducer;

@@ -8,6 +8,7 @@ import { getLocalStorageRepository } from "../repositories/localStorageRepositor
 import { ModalProvider } from "../components/common/Modal";
 import { increment, selectCount } from "../store/counterSlice";
 import {useDispatch, useSelector} from "react-redux";
+import { addTodo, selectTodos } from "../store/todosSlice";
 
 type ApplicationState = {
   userId: string | null;
@@ -33,6 +34,7 @@ function useApplicationState() {
 export default function Home() {
   const [state, updateState] = useApplicationState();
   const count = useSelector(selectCount);
+  const todos = useSelector(selectTodos);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -81,6 +83,12 @@ export default function Home() {
       <RepositoryWriterProvider writer={state.repository.writer}>
         <BoardContainer todoLists={state.repository.reader.getTodoLists()} />
       </RepositoryWriterProvider>
+      <button aria-label="Increment value" onClick={() => dispatch(addTodo({listId: 'list-id-1', name: "foobar"}))}>
+        + {count}
+      </button>
+      {todos.map((todo) => {
+        return <div id={todo.id}>{todo.name}</div>;
+      })}
     </ModalProvider>
   );
 }
